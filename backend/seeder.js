@@ -18,8 +18,6 @@ mongoose
     process.exit(1);
   });
 
-// ── Seed data ─────────────────────────────────────────────────────────────────
-
 const CATEGORIES = [
   "Burgers",
   "Pizza",
@@ -167,7 +165,6 @@ const PRODUCTS = [
   },
 ];
 
-// Tables: 3 floors × 5 tables each
 const buildTables = () => {
   const tables = [];
   for (let floor = 1; floor <= 3; floor++) {

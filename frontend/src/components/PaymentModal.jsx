@@ -72,8 +72,8 @@ const PaymentModal = ({ total, tableNumber, onConfirm, onClose, loading }) => {
   const selectedM = methods.find((m) => m.id === method);
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
-      <div className="glass w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl max-h-[92vh] overflow-y-auto">
+    <div className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+      <div className="glass w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl max-h-[92vh] overflow-y-auto pb-20 sm:pb-0">
         {/* Handle */}
         <div className="flex justify-center pt-3 pb-1 sm:hidden">
           <div className="w-10 h-1 bg-slate-600 rounded-full" />

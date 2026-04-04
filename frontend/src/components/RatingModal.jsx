@@ -44,8 +44,8 @@ const RatingModal = ({ order, onClose, onSuccess }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-in fade-in zoom-in duration-200">
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-lg max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+    <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 z-[100] animate-in fade-in zoom-in duration-200">
+      <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-lg max-h-[85vh] flex flex-col shadow-2xl overflow-hidden pb-16 sm:pb-0">
         {/* Header */}
         <div className="p-6 border-b border-slate-800 flex items-center justify-between shrink-0 bg-slate-900/50">
           <div>
