@@ -1,6 +1,24 @@
 import User from "../model/User.js";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import generateToken from "../utils/generateToken.js";
+
+const sendTokenResponse = (user, res) => {
+  const token = generateToken(user._id);
+
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: false, // set true in production (HTTPS)
+    sameSite: "lax",
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  });
+
+  res.status(200).json({
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+  });
+};
 
 export const registerUser = async (req, res) => {
   try {
@@ -20,7 +38,7 @@ export const registerUser = async (req, res) => {
       role,
     });
 
-    res.status(201).json(user);
+    sendTokenResponse(user, res);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -33,17 +51,7 @@ export const loginUser = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (user && (await bcrypt.compare(password, user.password))) {
-      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-        expiresIn: "7d",
-      });
-
-      res.json({
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        token,
-      });
+      sendTokenResponse(user, res);
     } else {
       res.status(401).json({ message: "Invalid credentials" });
     }

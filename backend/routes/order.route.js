@@ -1,17 +1,18 @@
 import express from "express";
-const router = express.Router();
 import {
   createOrder,
   getOrders,
-  getOrderById,
   updateOrderStatus,
   updatePaymentStatus,
 } from "../contollers/order.controller.js";
 
-router.post("/", createOrder);
-router.get("/", getOrders);
-router.get("/:id", getOrderById);
-router.put("/:id/status", updateOrderStatus);
-router.put("/:id/payment", updatePaymentStatus);
+import { protect, authorize } from "../middleware/authMiddleware.js";
+
+const router = express.Router();
+
+router.post("/", protect, createOrder);
+router.get("/", protect, getOrders);
+router.put("/:id/status", protect, authorize("kitchen"), updateOrderStatus);
+router.put("/:id/payment", protect, authorize("cashier"), updatePaymentStatus);
 
 export default router;

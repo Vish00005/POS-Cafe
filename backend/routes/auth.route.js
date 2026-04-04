@@ -1,16 +1,15 @@
 import express from "express";
-const router = express.Router();
 import {
   registerUser,
   loginUser,
   getMe,
 } from "../contollers/auth.controller.js";
+import { protect } from "../middleware/authMiddleware.js";
 
-router.get("/sample", (req, res) => {
-  res.send("Auth Smaple Route...");
-});
+const router = express.Router();
+
 router.post("/register", registerUser);
 router.post("/login", loginUser);
-router.get("/me", getMe);
+router.get("/me", protect, getMe);
 
 export default router;
