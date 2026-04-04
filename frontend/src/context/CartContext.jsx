@@ -1,9 +1,24 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 
 const CartContext = createContext(null);
 
+const CART_KEY = 'cafeteria_cart';
+
+// Read initial cart from sessionStorage (survives refresh, cleared on tab close)
+const loadCart = () => {
+  try {
+    const raw = sessionStorage.getItem(CART_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch { return []; }
+};
+
 export const CartProvider = ({ children }) => {
-  const [cart, setCart] = useState([]);
+  const [cart, setCart] = useState(loadCart);
+
+  // Sync to sessionStorage on every change
+  useEffect(() => {
+    sessionStorage.setItem(CART_KEY, JSON.stringify(cart));
+  }, [cart]);
 
   const addToCart = (product) => {
     setCart((prev) => {
@@ -31,7 +46,10 @@ export const CartProvider = ({ children }) => {
     );
   };
 
-  const clearCart = () => setCart([]);
+  const clearCart = () => {
+    setCart([]);
+    sessionStorage.removeItem(CART_KEY);
+  };
 
   const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
 

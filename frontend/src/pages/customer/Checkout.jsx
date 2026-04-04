@@ -260,9 +260,14 @@ const Checkout = () => {
       paymentMethod: method,
       customer: user._id,
     });
+    const orderTotal = total; // capture before clearCart zeroes it
     clearCart();
     setShowModal(false);
-    setSuccess({ orderNumber: data.orderNumber, paymentMethod: method });
+    setSuccess({
+      orderNumber: data.orderNumber,
+      paymentMethod: method,
+      total: orderTotal,
+    });
     toast.success("Order placed!");
   };
 
@@ -288,11 +293,16 @@ const Checkout = () => {
       // ── CARD: open Razorpay popup (card only)
       const loaded = await loadRazorpay();
       if (!loaded) {
-        toast.error("Failed to load payment gateway. Check your internet connection.");
+        toast.error(
+          "Failed to load payment gateway. Check your internet connection.",
+        );
         return;
       }
 
-      const { data: rzpOrder } = await api.post("/api/v1/payment/create-order", { amount: total });
+      const { data: rzpOrder } = await api.post(
+        "/api/v1/payment/create-order",
+        { amount: total },
+      );
 
       const options = {
         key: import.meta.env.VITE_RAZORPAY_KEY,
@@ -301,7 +311,10 @@ const Checkout = () => {
         name: "Smart Cafeteria",
         description: `Table ${selectedTable} Order`,
         order_id: rzpOrder.id,
-        prefill: { name: user?.name || "Customer", email: user?.email || "customer@cafe.com" },
+        prefill: {
+          name: user?.name || "Customer",
+          email: user?.email || "customer@cafe.com",
+        },
         theme: { color: "#6366f1" },
         method: { upi: false, card: true, netbanking: false, wallet: false },
 
@@ -309,7 +322,10 @@ const Checkout = () => {
           try {
             await placeOrder("card");
           } catch (err) {
-            toast.error(err.response?.data?.message || "Order creation failed after payment");
+            toast.error(
+              err.response?.data?.message ||
+                "Order creation failed after payment",
+            );
           } finally {
             setPlacing(false);
           }
@@ -318,7 +334,9 @@ const Checkout = () => {
 
       const rzp = new window.Razorpay(options);
       rzp.on("payment.failed", (response) => {
-        toast.error(`Payment failed: ${response.error?.description || "Please try again"}`);
+        toast.error(
+          `Payment failed: ${response.error?.description || "Please try again"}`,
+        );
         setPlacing(false);
       });
 
@@ -339,7 +357,7 @@ const Checkout = () => {
       <SuccessScreen
         orderNumber={success.orderNumber}
         table={selectedTable}
-        total={total}
+        total={success.total}
         paymentMethod={success.paymentMethod}
       />
     );
@@ -443,8 +461,8 @@ const Checkout = () => {
               Tap/Swipe at counter. Kitchen starts immediately.
             </p>
             <p>
-              • <span className="text-yellow-400 font-medium">Cash</span> – Pay
-              at counter after receiving order.
+              • <span className="text-blue-400 font-medium">Cash</span> – Pay at
+              counter for receiving order.
             </p>
           </div>
         </div>

@@ -9,8 +9,9 @@ import { ShoppingCart, Search, QrCode } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const Menu = () => {
-  // Read table from URL — this is how QR code links work: /menu?table=5
-  const table = new URLSearchParams(window.location.search).get('table');
+  // Read table from URL query first, fall back to sessionStorage (survives refresh)
+  const urlTable = new URLSearchParams(window.location.search).get('table');
+  const [table, setTable] = useState(() => urlTable || sessionStorage.getItem('assignedTable') || null);
 
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -21,10 +22,11 @@ const Menu = () => {
 
   // When a QR link brings a table param, persist it for the whole session
   useEffect(() => {
-    if (table) {
-      sessionStorage.setItem('assignedTable', table);
+    if (urlTable) {
+      sessionStorage.setItem('assignedTable', urlTable);
+      setTable(urlTable);
     }
-  }, [table]);
+  }, [urlTable]);
 
   // Periodically check if our assigned table has been freed by the cashier
   useEffect(() => {

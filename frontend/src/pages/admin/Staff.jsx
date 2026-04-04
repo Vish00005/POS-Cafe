@@ -17,14 +17,34 @@ const Staff = () => {
   const [loading, setLoading] = useState(true);
   const [search, setSearch]   = useState('');
 
+  const [error, setError] = useState(null);
+
   useEffect(() => {
-    Promise.all([
-      api.get('/api/v1/auth/users'),
-      api.get('/api/v1/order'),
-    ])
-      .then(([u, o]) => { setUsers(u.data); setOrders(o.data); })
-      .catch(console.error)
-      .finally(() => setLoading(false));
+    const load = async () => {
+      try {
+        // Fetch users and orders independently — one failing won't kill the other
+        const [usersRes, ordersRes] = await Promise.allSettled([
+          api.get('/api/v1/auth/users'),
+          api.get('/api/v1/order'),
+        ]);
+
+        if (usersRes.status === 'fulfilled') {
+          setUsers(usersRes.value.data);
+        } else {
+          console.error('Users fetch failed:', usersRes.reason?.response?.data || usersRes.reason);
+          setError('Could not load users — ' + (usersRes.reason?.response?.data?.message || usersRes.reason?.message));
+        }
+
+        if (ordersRes.status === 'fulfilled') {
+          setOrders(ordersRes.value.data);
+        } else {
+          console.error('Orders fetch failed:', ordersRes.reason);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
   }, []);
 
   // Pre-compute per-customer stats from orders
@@ -82,6 +102,11 @@ const Staff = () => {
 
         {loading ? (
           <div className="flex justify-center py-20"><Spinner size="lg" /></div>
+        ) : error ? (
+          <div className="glass rounded-2xl p-10 text-center space-y-2">
+            <p className="text-red-400 font-medium">⚠️ {error}</p>
+            <p className="text-slate-500 text-sm">Make sure you are logged in as admin.</p>
+          </div>
         ) : (
           <>
             {/* ── Staff section ── */}

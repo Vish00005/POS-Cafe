@@ -5,7 +5,7 @@ import { useCart } from '../../context/CartContext';
 import { ArrowLeft, ShoppingBag, CreditCard, ChevronRight } from 'lucide-react';
 
 const Cart = () => {
-  const table = new URLSearchParams(window.location.search).get('table');
+  const table = new URLSearchParams(window.location.search).get('table') || sessionStorage.getItem('assignedTable');
   const { cart, total, clearCart } = useCart();
   const navigate = useNavigate();
 
