@@ -3,7 +3,8 @@ import mongoose from "mongoose";
 const productSchema = new mongoose.Schema(
   {
     name: String,
-    category: String,
+    category:   { type: String, default: "" },      // legacy single value kept for compatibility
+    categories: { type: [String], default: [] },     // new multi-select
     price: Number,
     description: String,
     img: {

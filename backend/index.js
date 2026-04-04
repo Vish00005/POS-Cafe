@@ -9,6 +9,7 @@ import orderRoute from "./routes/order.route.js";
 import tableRoute from "./routes/table.route.js";
 import paymentRoute from "./routes/payment.route.js";
 import settingsRoute from "./routes/settings.route.js";
+import categoryRoute from "./routes/category.route.js";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -37,6 +38,7 @@ app.use("/api/v1/table", tableRoute);
 app.use("/api/v1/order", orderRoute);
 app.use("/api/v1/payment", paymentRoute);
 app.use("/api/v1/settings", settingsRoute);
+app.use("/api/v1/category", categoryRoute);
 
 app.get("/api/v1/logout", (req, res) => {
   res.cookie("token", "", {
