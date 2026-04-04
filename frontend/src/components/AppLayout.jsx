@@ -73,15 +73,14 @@ const AppLayout = ({ children }) => {
       {/* ── Sidebar (Desktop: Fixed Rail | Mobile: Drawer) ── */}
       <aside
         className={`
-          fixed inset-y-0 left-0 z-50 shrink-0 flex flex-col bg-slate-900 border-r border-slate-800 transition-all duration-300
-          lg:relative lg:translate-x-0
-          ${isMobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
-          ${expanded ? "w-64" : "w-16"}
-          ${!expanded && !isMobileOpen ? "w-0 lg:w-16" : ""}
-          ${isMobileOpen ? "w-64" : ""}
+          fixed inset-y-0 left-0 z-50 flex flex-col bg-slate-900 border-r border-slate-800 transition-all duration-300
+          lg:relative lg:translate-x-0 lg:opacity-100 lg:visible
+          ${isMobileOpen ? "translate-x-0 visible opacity-100 w-64 shadow-2xl" : "-translate-x-full invisible opacity-0 lg:w-auto lg:visible lg:opacity-100"}
+          ${!isMobileOpen ? "w-0 lg:w-auto" : ""}
+          ${expanded ? "lg:w-64" : "lg:w-16"}
         `}
       >
-        {/* Logo + toggle (Desktop only) */}
+        {/* Logo + toggle (Desktop only: lg only) */}
         <div className="hidden lg:flex items-center h-16 px-3 border-b border-slate-800 gap-3 overflow-hidden">
           <button
             onClick={() => setExpanded(!expanded)}
@@ -90,16 +89,19 @@ const AppLayout = ({ children }) => {
             {expanded ? <X size={16} /> : <MenuIcon size={16} />}
           </button>
           {expanded && (
-            <span className="text-sm font-bold text-white whitespace-nowrap overflow-hidden">
+            <span className="text-sm font-bold text-white whitespace-nowrap">
               ☕ Smart Cafeteria
             </span>
           )}
         </div>
 
-        {/* Logo + Close (Mobile only) */}
-        <div className="flex lg:hidden items-center h-16 px-4 border-b border-slate-800 justify-between">
+        {/* Logo + Close (Mobile only: below lg) */}
+        <div className="flex lg:hidden items-center h-16 px-4 border-b border-slate-800 justify-between shrink-0">
           <span className="text-sm font-bold text-white">☕ Smart Cafeteria</span>
-          <button onClick={closeMobile} className="text-slate-400">
+          <button 
+            onClick={closeMobile} 
+            className="p-2 -mr-2 text-slate-400 hover:text-white transition-colors"
+          >
             <X size={20} />
           </button>
         </div>

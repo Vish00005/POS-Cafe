@@ -28,6 +28,8 @@ const Menu = () => {
     }
   }, [urlTable]);
 
+  const [wasOccupied, setWasOccupied] = useState(false);
+
   // Periodically check if our assigned table has been freed by the cashier
   useEffect(() => {
     const myTable = sessionStorage.getItem('assignedTable');
@@ -37,13 +39,18 @@ const Menu = () => {
       api.get('/api/v1/table')
         .then(({ data }) => {
           const t = data.find(t => String(t.tableNumber) === String(myTable));
-          if (t && !t.isOccupied) {
-            // Cashier freed our table — clear the session assignment
-            sessionStorage.removeItem('assignedTable');
-            toast('Your session has ended. Table has been cleared.', {
-              icon: '🔔',
-              duration: 5000,
-            });
+          if (t) {
+            if (t.isOccupied) {
+              setWasOccupied(true);
+            } else if (wasOccupied) {
+              // Only clear if it WAS occupied and now it is NOT (freed by cashier)
+              sessionStorage.removeItem('assignedTable');
+              setTable(null);
+              toast('Your session has ended. Table has been cleared.', {
+                icon: '🔔',
+                duration: 5000,
+              });
+            }
           }
         })
         .catch(() => {});
@@ -51,7 +58,7 @@ const Menu = () => {
 
     const iv = setInterval(check, 15000); // check every 15s
     return () => clearInterval(iv);
-  }, []);
+  }, [wasOccupied]);
 
   // Fetch menu AFTER page load (not on QR scan)
   useEffect(() => {
