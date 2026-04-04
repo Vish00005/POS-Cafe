@@ -1,4 +1,4 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
 
 router.post("/", createOrder);
@@ -7,4 +7,4 @@ router.get("/:id", getOrderById);
 router.put("/:id/status", updateOrderStatus);
 router.put("/:id/payment", updatePaymentStatus);
 
-module.exports = router;
+export default router;

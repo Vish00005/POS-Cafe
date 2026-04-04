@@ -1,10 +1,11 @@
-require("dotenv").config();
-const express = require("express");
+import dotenv from "dotenv";
+dotenv.config();
+import express from "express";
 const app = express();
-const authRoute = require("./routes/auth.route.js");
-const productRoute = require("./routes/product.route.js");
-const orderRoute = require("./routes/order.route.js");
-const tableRoute = require("./routes/table.route.js");
+import authRoute from "./routes/auth.route.js";
+import productRoute from "./routes/product.route.js";
+import orderRoute from "./routes/order.route.js";
+import tableRoute from "./routes/table.route.js";
 
 PORT = process.env.PORT || 3001;
 
