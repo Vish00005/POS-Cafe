@@ -285,44 +285,15 @@ const ProductsManagement = () => {
           <div className="flex justify-center py-20"><Spinner size="lg" /></div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {displayed.map(p => {
-              const cats = p.categories?.length ? p.categories : (p.category ? [p.category] : []);
-              return (
-                <div key={p._id} className="glass rounded-2xl overflow-hidden card-hover group">
-                  <div className="relative h-36 bg-slate-800 flex items-center justify-center">
-                    <img
-                      src={p.img || 'https://cdn-icons-png.flaticon.com/128/8633/8633559.png'}
-                      alt={p.name}
-                      className="h-24 w-24 object-contain"
-                      onError={e => { e.target.src = 'https://cdn-icons-png.flaticon.com/128/8633/8633559.png'; }}
-                    />
-                    <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button onClick={() => openEdit(p)} className="p-1.5 bg-indigo-600 rounded-lg hover:bg-indigo-500 text-white"><Pencil size={14} /></button>
-                      <button onClick={() => handleDelete(p._id)} className="p-1.5 bg-red-600 rounded-lg hover:bg-red-500 text-white"><Trash2 size={14} /></button>
-                    </div>
-                    {!p.isAvailable && (
-                      <div className="absolute inset-0 bg-slate-900/60 flex items-center justify-center">
-                        <span className="text-xs text-red-400 font-medium bg-slate-900 px-2 py-1 rounded-full">Unavailable</span>
-                      </div>
-                    )}
-                  </div>
-                  <div className="p-4">
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex-1 min-w-0">
-                        <h3 className="text-sm font-semibold text-white truncate">{p.name}</h3>
-                        <div className="flex flex-wrap gap-1 mt-1">
-                          {cats.map(c => (
-                            <span key={c} className="text-xs text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded-full">{c}</span>
-                          ))}
-                        </div>
-                      </div>
-                      <span className="text-lg font-bold text-white shrink-0">₹{p.price}</span>
-                    </div>
-                    <p className="text-xs text-slate-500 mt-2 line-clamp-2">{p.description}</p>
-                  </div>
-                </div>
-              );
-            })}
+            {displayed.map(p => (
+              <ProductCard 
+                key={p._id} 
+                product={p} 
+                variant="admin"
+                onEdit={openEdit}
+                onDelete={handleDelete}
+              />
+            ))}
             {displayed.length === 0 && (
               <div className="col-span-full text-center py-16 text-slate-600">No products in this category</div>
             )}

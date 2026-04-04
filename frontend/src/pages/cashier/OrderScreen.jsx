@@ -134,42 +134,17 @@ const OrderScreen = () => {
                 <Spinner size="lg" />
               </div>
             ) : (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {filtered.map((p) => {
                   const inCart = cart.find((i) => i._id === p._id);
                   return (
-                    <button
-                      key={p._id}
+                    <ProductCard 
+                      key={p._id} 
+                      product={p} 
+                      variant="cashier"
                       onClick={() => addToCart(p)}
-                      className={`glass rounded-xl p-3 text-left hover:border-indigo-500/50 transition-all border-2 ${inCart ? "border-indigo-500" : "border-transparent"}`}
-                    >
-                      <img
-                        src={
-                          p.img ||
-                          "https://cdn-icons-png.flaticon.com/128/8633/8633559.png"
-                        }
-                        alt={p.name}
-                        className="w-full h-20 object-contain mb-2"
-                        onError={(e) => {
-                          e.target.src =
-                            "https://cdn-icons-png.flaticon.com/128/8633/8633559.png";
-                        }}
-                      />
-                      <div className="text-sm font-medium text-white truncate">
-                        {p.name}
-                      </div>
-                      <div className="text-xs text-slate-400">{p.category}</div>
-                      <div className="flex items-center justify-between mt-2">
-                        <span className="text-sm font-bold text-indigo-400">
-                          ₹{p.price}
-                        </span>
-                        {inCart && (
-                          <span className="text-xs bg-indigo-600 text-white px-2 py-0.5 rounded-full">
-                            ×{inCart.quantity}
-                          </span>
-                        )}
-                      </div>
-                    </button>
+                      quantity={inCart?.quantity || 0}
+                    />
                   );
                 })}
               </div>
