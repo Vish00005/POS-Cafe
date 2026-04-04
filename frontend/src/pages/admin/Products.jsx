@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import api from '../../services/api';
 import Layout from '../../components/Layout';
 import Spinner from '../../components/Spinner';
+import ProductCard from '../../components/ProductCard';
 import { Plus, Pencil, Trash2, X, Save, Tag, ChevronDown, Check } from 'lucide-react';
 import toast from 'react-hot-toast';
 

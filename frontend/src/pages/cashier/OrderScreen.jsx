@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import api from "../../services/api";
 import Layout from "../../components/Layout";
 import Spinner from "../../components/Spinner";
+import ProductCard from "../../components/ProductCard";
 import {
   Plus,
   Minus,

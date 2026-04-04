@@ -5,7 +5,7 @@ import { LogOut, LayoutDashboard, Package, Table2, ShoppingBag, ChefHat, CreditC
 const navLinks = {
   admin: [
     { to: '/admin', label: 'Dashboard', icon: LayoutDashboard },
-    { to: '/admin/products', label: 'Products', icon: Package },
+    { to: '/admin/products', label: 'Menu', icon: Package },
     { to: '/admin/tables', label: 'Tables', icon: Table2 },
     { to: '/admin/orders', label: 'Orders', icon: ShoppingBag },
   ],
