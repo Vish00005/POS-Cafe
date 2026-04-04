@@ -74,15 +74,14 @@ const AppLayout = ({ children }) => {
           </div>
           <div className="flex flex-col">
             <span className="text-base font-black text-white tracking-widest leading-none">
-              SMART POS
+              ODOO CAFETERIA
             </span>
             <span className="text-[10px] text-indigo-400 font-bold tracking-[0.2em] uppercase">
-              Cafeteria
+              Premium POS
             </span>
           </div>
         </div>
 
-        {/* Center: Navigation Links */}
         <nav className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2  p-1.5  border-white/10 shadow-2xl">
           {navItems.map(({ to, icon: Icon, label }) => (
             <NavLink
@@ -135,7 +134,7 @@ const AppLayout = ({ children }) => {
             ☕
           </div>
           <span className="text-base font-black tracking-tighter text-white uppercase">
-            SMART POS
+            ODOO CAFETERIA
           </span>
         </div>
         <button

@@ -47,8 +47,8 @@ const Login = () => {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-linear-to-br from-indigo-500 to-purple-600 rounded-2xl shadow-xl mb-4 text-3xl">
             ☕
           </div>
-          <h1 className="text-3xl font-bold text-white">Smart Cafeteria</h1>
-          <p className="text-slate-400 mt-1">Sign in to your account</p>
+          <h1 className="text-3xl font-black text-white tracking-tight">ODOO CAFETERIA</h1>
+          <p className="text-slate-400 font-medium tracking-wide">Premium POS System</p>
         </div>
 
         {/* Card */}

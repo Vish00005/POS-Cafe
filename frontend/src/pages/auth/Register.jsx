@@ -40,7 +40,7 @@ const Register = () => {
             ☕
           </div>
           <h1 className="text-3xl font-bold text-white">Create Account</h1>
-          <p className="text-slate-400 mt-1">Join the Smart Cafeteria</p>
+          <p className="text-slate-400 mt-1 uppercase tracking-widest font-bold">Odoo Cafeteria</p>
         </div>
 
         <div className="glass rounded-2xl p-8 shadow-2xl">

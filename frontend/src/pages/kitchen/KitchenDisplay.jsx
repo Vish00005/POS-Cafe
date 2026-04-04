@@ -9,6 +9,7 @@ import {
   RefreshCw,
   Bell,
   BellOff,
+  Check,
 } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -50,7 +51,16 @@ const KitchenDisplay = () => {
   const [audioEnabled, setAudioEnabled] = useState(false);
   const audioEnabledRef = useRef(false);
   const knownOrderIds = useRef(new Set());
+  const [checkedItems, setCheckedItems] = useState(() => {
+    const saved = localStorage.getItem("kitchen_checked_items");
+    return saved ? JSON.parse(saved) : {};
+  });
   const audioRef = useRef(new Audio("/mixkit-correct-answer-reward-952.wav"));
+
+  // Save checked items to localStorage
+  useEffect(() => {
+    localStorage.setItem("kitchen_checked_items", JSON.stringify(checkedItems));
+  }, [checkedItems]);
 
   // Toggle audio and store in ref
   const toggleAudio = () => {
@@ -154,13 +164,34 @@ const KitchenDisplay = () => {
       setOrders((prev) =>
         prev.map((o) => (o._id === orderId ? { ...o, status } : o)),
       );
-      if (status === "completed") toast.success("Order marked as ready! 🎉");
-      else toast.success(`Order moved to ${status}`);
+      if (status === "completed") {
+        setCheckedItems((prev) => {
+          const next = { ...prev };
+          delete next[orderId];
+          return next;
+        });
+        toast.success("Order marked as ready! 🎉");
+      } else toast.success(`Order moved to ${status}`);
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to update");
     } finally {
       setUpdating(null);
     }
+  };
+
+  const toggleItem = (orderId, itemIndex) => {
+    setCheckedItems((prev) => {
+      const orderChecked = { ...prev[orderId] };
+      orderChecked[itemIndex] = !orderChecked[itemIndex];
+      return { ...prev, [orderId]: orderChecked };
+    });
+  };
+
+  const isOrderReady = (order) => {
+    if (order.status !== "preparing") return true;
+    const items = order.items || [];
+    const checked = checkedItems[order._id] || {};
+    return items.every((_, i) => checked[i]);
   };
 
   const getElapsed = (createdAt) => {
@@ -286,24 +317,48 @@ const KitchenDisplay = () => {
 
                         {/* Items */}
                         <div className="space-y-1.5">
-                          {order.items?.map((item, i) => (
-                            <div key={i} className="flex items-center gap-2">
-                              <div className="w-6 h-6 bg-slate-700 rounded-md flex items-center justify-center text-xs font-bold text-white">
-                                {item.quantity}
+                          {order.items?.map((item, i) => {
+                            const isChecked = !!(checkedItems[order._id]?.[i]);
+                            const showCheckbox = status === "preparing";
+
+                            return (
+                              <div
+                                key={i}
+                                className={`flex items-center gap-2 group transition-all ${isChecked ? "opacity-40" : ""}`}
+                              >
+                                {showCheckbox ? (
+                                  <button
+                                    onClick={() => toggleItem(order._id, i)}
+                                    className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${isChecked ? "bg-indigo-600 border-indigo-600" : "border-slate-600 hover:border-indigo-400"}`}
+                                  >
+                                    {isChecked && <Check size={12} className="text-white" />}
+                                  </button>
+                                ) : (
+                                  <div className="w-6 h-6 bg-slate-700 rounded-md flex items-center justify-center text-xs font-bold text-white">
+                                    {item.quantity}
+                                  </div>
+                                )}
+                                <span
+                                  className={`text-sm text-white ${isChecked ? "line-through text-slate-500" : ""}`}
+                                >
+                                  {showCheckbox && (
+                                    <span className="text-xs font-bold text-slate-500 mr-2">
+                                      {item.quantity}x
+                                    </span>
+                                  )}
+                                  {item.name}
+                                </span>
                               </div>
-                              <span className="text-sm text-white">
-                                {item.name}
-                              </span>
-                            </div>
-                          ))}
+                            );
+                          })}
                         </div>
 
                         {/* Action button */}
                         {cfg.next && (
                           <button
                             onClick={() => updateStatus(order._id, cfg.next)}
-                            disabled={updating === order._id}
-                            className={`w-full ${cfg.btnColor} disabled:opacity-50 text-white text-sm font-semibold py-2.5 rounded-lg transition-all`}
+                            disabled={updating === order._id || !isOrderReady(order)}
+                            className={`w-full ${cfg.btnColor} disabled:opacity-20 disabled:cursor-not-allowed text-white text-sm font-semibold py-2.5 rounded-lg transition-all`}
                           >
                             {updating === order._id
                               ? "Updating..."

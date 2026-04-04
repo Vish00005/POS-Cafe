@@ -23,7 +23,7 @@ const PaymentModal = ({ total, tableNumber, onConfirm, onClose, loading }) => {
   const [method, setMethod] = useState(null);
   const [settings, setSettings] = useState({
     upiId: "",
-    upiName: "Smart Cafeteria",
+    upiName: "Odoo Cafeteria",
   });
 
   useEffect(() => {
@@ -66,7 +66,7 @@ const PaymentModal = ({ total, tableNumber, onConfirm, onClose, loading }) => {
   };
 
   const upiLink = settings.upiId
-    ? `upi://pay?pa=${settings.upiId}&pn=${encodeURIComponent(settings.upiName || "Smart Cafeteria")}&am=${total.toFixed(2)}&cu=INR`
+    ? `upi://pay?pa=${settings.upiId}&pn=${encodeURIComponent(settings.upiName || "Odoo Cafeteria")}&am=${total.toFixed(2)}&cu=INR`
     : "upi://pay?pa=placeholder@upi";
 
   const selectedM = methods.find((m) => m.id === method);
@@ -82,6 +82,7 @@ const PaymentModal = ({ total, tableNumber, onConfirm, onClose, loading }) => {
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-slate-700/50">
           <div>
+            <p className="text-slate-400 mt-1 uppercase tracking-widest font-bold">Odoo Cafeteria</p>
             <h2 className="text-lg font-bold text-white">
               {step === "select" && "Choose Payment"}
               {step === "upi" && "UPI Payment"}

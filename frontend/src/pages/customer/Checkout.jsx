@@ -35,6 +35,7 @@ const SuccessScreen = ({ orderNumber, table, total, paymentMethod }) => {
             <h2 className="text-2xl font-black text-white">
               Order Confirmed! 🎉
             </h2>
+            <p className="text-slate-400 mt-1 uppercase tracking-widest font-bold">Odoo Cafeteria</p>
             <p className="text-slate-400 text-sm mt-1">
               Your order is on its way to the kitchen
             </p>
@@ -308,7 +309,7 @@ const Checkout = () => {
         key: import.meta.env.VITE_RAZORPAY_KEY,
         amount: rzpOrder.amount,
         currency: rzpOrder.currency,
-        name: "Smart Cafeteria",
+        name: "Odoo Cafeteria",
         description: `Table ${selectedTable} Order`,
         order_id: rzpOrder.id,
         prefill: {
@@ -380,7 +381,11 @@ const Checkout = () => {
               <ArrowLeft size={18} />
             </button>
             <div>
-              <h1 className="text-lg font-bold text-white">Checkout</h1>
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-black text-white tracking-widest uppercase">Odoo Cafeteria</span>
+                <span className="w-1 h-1 bg-slate-700 rounded-full" />
+                <h1 className="text-sm font-bold text-slate-400">Checkout</h1>
+              </div>
               {selectedTable ? (
                 <p className="text-xs text-indigo-400">Table {selectedTable}</p>
               ) : (
@@ -413,7 +418,7 @@ const Checkout = () => {
 
           {/* Order review */}
           <div className="glass rounded-2xl p-4 space-y-3">
-            <h3 className="font-semibold text-white text-sm">Order Review</h3>
+            <div className="font-bold text-white text-sm tracking-widest uppercase">Odoo Cafeteria</div>
             {cart.map((item) => (
               <div key={item._id} className="flex justify-between text-sm">
                 <span className="text-slate-300">

@@ -30,7 +30,7 @@ const AdminSettings = () => {
   };
 
   const upiLink = settings.upiId
-    ? `upi://pay?pa=${settings.upiId}&pn=${encodeURIComponent(settings.upiName || 'Smart Cafeteria')}&cu=INR`
+    ? `upi://pay?pa=${settings.upiId}&pn=${encodeURIComponent(settings.upiName || 'Odoo Cafeteria')}&cu=INR`
     : '';
 
   const copyUpiId = () => {
@@ -54,7 +54,7 @@ const AdminSettings = () => {
                 <Store size={18} className="text-indigo-400" /> Cafe Details
               </div>
               {[
-                { label: 'Cafe Name', key: 'cafeName', placeholder: 'Smart Cafeteria' },
+                { label: 'Cafe Name', key: 'cafeName', placeholder: 'Odoo Cafeteria' },
                 { label: 'Currency', key: 'currency', placeholder: 'INR' },
               ].map(({ label, key, placeholder }) => (
                 <div key={key}>
@@ -81,7 +81,7 @@ const AdminSettings = () => {
 
               {[
                 { label: 'UPI ID (VPA)', key: 'upiId', placeholder: 'yourname@upi' },
-                { label: 'Display Name on QR', key: 'upiName', placeholder: 'Smart Cafeteria' },
+                { label: 'Display Name on QR', key: 'upiName', placeholder: 'Odoo Cafeteria' },
               ].map(({ label, key, placeholder }) => (
                 <div key={key}>
                   <label className="block text-xs text-slate-400 mb-1">{label}</label>
@@ -108,7 +108,7 @@ const AdminSettings = () => {
                     <QRCodeSVG value={upiLink} size={120} level="H" />
                   </div>
                   <div className="text-sm space-y-1">
-                    <div className="text-white font-medium">{settings.upiName || 'Smart Cafeteria'}</div>
+                    <div className="text-white font-medium">{settings.upiName || 'Odoo Cafeteria'}</div>
                     <div className="text-indigo-400 font-mono text-xs">{settings.upiId}</div>
                     <div className="text-slate-500 text-xs">This QR is shown to customers when they select UPI</div>
                   </div>

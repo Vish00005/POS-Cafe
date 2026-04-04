@@ -6,6 +6,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
+import Landing from "./pages/Landing";
 
 // Admin
 import AdminDashboard from "./pages/admin/Dashboard";
@@ -49,7 +50,7 @@ function App() {
             {/* Public */}
             <Route path="/login"    element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/"         element={<Navigate to="/login" replace />} />
+            <Route path="/"         element={<Landing />} />
 
             {/* ── Admin ── */}
             {[
@@ -96,7 +97,7 @@ function App() {
               } />
             ))}
 
-            <Route path="*" element={<Navigate to="/login" replace />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </CartProvider>
       </AuthProvider>
