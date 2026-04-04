@@ -13,34 +13,158 @@ const MONGO_URL = process.env.MONGO_URL || "mongodb://127.0.0.1:27017/odoo_pos";
 mongoose
   .connect(MONGO_URL)
   .then(() => console.log("✅ MongoDB Connected for Seeding"))
-  .catch((err) => { console.error(err.message); process.exit(1); });
+  .catch((err) => {
+    console.error(err.message);
+    process.exit(1);
+  });
 
 // ── Seed data ─────────────────────────────────────────────────────────────────
 
 const CATEGORIES = [
-  "Burgers", "Pizza", "Salads", "Beverages",
-  "Desserts", "Snacks", "Mains", "Combos",
+  "Burgers",
+  "Pizza",
+  "Salads",
+  "Beverages",
+  "Desserts",
+  "Snacks",
+  "Mains",
+  "Combos",
 ];
 
 const PRODUCTS = [
-  { name: "Classic Cheeseburger",   categories: ["Burgers"],    category: "Burgers",    price: 149, description: "Juicy beef patty with cheese, tomato and lettuce." },
-  { name: "Double Smash Burger",    categories: ["Burgers"],    category: "Burgers",    price: 199, description: "Two crispy smash patties with special sauce." },
-  { name: "Margherita Pizza",       categories: ["Pizza"],      category: "Pizza",      price: 249, description: "Classic pizza with fresh mozzarella and basil." },
-  { name: "Chicken BBQ Pizza",      categories: ["Pizza"],      category: "Pizza",      price: 299, description: "Smoky BBQ chicken on a hand-tossed base." },
-  { name: "Caesar Salad",           categories: ["Salads"],     category: "Salads",     price: 129, description: "Crisp romaine with Caesar dressing and croutons." },
-  { name: "Greek Salad",            categories: ["Salads"],     category: "Salads",     price: 119, description: "Cucumber, olives, feta, and cherry tomatoes." },
-  { name: "Coca-Cola",              categories: ["Beverages"],  category: "Beverages",  price: 49,  description: "Chilled can of Coca-Cola 330ml." },
-  { name: "Mango Lassi",            categories: ["Beverages"],  category: "Beverages",  price: 79,  description: "Thick yoghurt mango shake." },
-  { name: "Masala Chai",            categories: ["Beverages"],  category: "Beverages",  price: 39,  description: "Spiced Indian milk tea." },
-  { name: "Chocolate Lava Cake",    categories: ["Desserts"],   category: "Desserts",   price: 99,  description: "Warm chocolate cake with a gooey molten center." },
-  { name: "Gulab Jamun (2 pcs)",    categories: ["Desserts"],   category: "Desserts",   price: 69,  description: "Soft milk-solid dumplings in rose syrup." },
-  { name: "French Fries",           categories: ["Snacks"],     category: "Snacks",     price: 79,  description: "Crispy golden fries with dipping sauce." },
-  { name: "Onion Rings",            categories: ["Snacks"],     category: "Snacks",     price: 89,  description: "Beer-battered onion rings, served hot." },
-  { name: "Grilled Chicken Platter",categories: ["Mains"],      category: "Mains",      price: 299, description: "Half grilled chicken with coleslaw and fries." },
-  { name: "Paneer Butter Masala",   categories: ["Mains"],      category: "Mains",      price: 219, description: "Cottage cheese in rich tomato-butter gravy." },
-  { name: "Dal Tadka + Rice",       categories: ["Mains"],      category: "Mains",      price: 179, description: "Yellow lentils with tempered spices over steamed rice." },
-  { name: "Burger + Fries + Coke",  categories: ["Combos", "Burgers"], category: "Combos", price: 249, description: "Classic burger combo with fries and a chilled Coke." },
-  { name: "Pizza + Salad Combo",    categories: ["Combos", "Pizza"],   category: "Combos", price: 329, description: "A personal pizza paired with a fresh salad." },
+  {
+    name: "Classic Cheeseburger",
+    categories: ["Burgers"],
+    category: "Burgers",
+    price: 149,
+    description: "Juicy beef patty with cheese, tomato and lettuce.",
+  },
+  {
+    name: "Double Smash Burger",
+    categories: ["Burgers"],
+    category: "Burgers",
+    price: 199,
+    description: "Two crispy smash patties with special sauce.",
+  },
+  {
+    name: "Margherita Pizza",
+    categories: ["Pizza"],
+    category: "Pizza",
+    price: 249,
+    description: "Classic pizza with fresh mozzarella and basil.",
+  },
+  {
+    name: "Chicken BBQ Pizza",
+    categories: ["Pizza"],
+    category: "Pizza",
+    price: 299,
+    description: "Smoky BBQ chicken on a hand-tossed base.",
+  },
+  {
+    name: "Caesar Salad",
+    categories: ["Salads"],
+    category: "Salads",
+    price: 129,
+    description: "Crisp romaine with Caesar dressing and croutons.",
+  },
+  {
+    name: "Greek Salad",
+    categories: ["Salads"],
+    category: "Salads",
+    price: 119,
+    description: "Cucumber, olives, feta, and cherry tomatoes.",
+  },
+  {
+    name: "Coca-Cola",
+    categories: ["Beverages"],
+    category: "Beverages",
+    price: 49,
+    description: "Chilled can of Coca-Cola 330ml.",
+  },
+  {
+    name: "Sprite",
+    categories: ["Beverages"],
+    category: "Beverages",
+    price: 5,
+    description: "Chilled can of Sprite 200ml.",
+  },
+  {
+    name: "Mango Lassi",
+    categories: ["Beverages"],
+    category: "Beverages",
+    price: 79,
+    description: "Thick yoghurt mango shake.",
+  },
+  {
+    name: "Masala Chai",
+    categories: ["Beverages"],
+    category: "Beverages",
+    price: 39,
+    description: "Spiced Indian milk tea.",
+  },
+  {
+    name: "Chocolate Lava Cake",
+    categories: ["Desserts"],
+    category: "Desserts",
+    price: 99,
+    description: "Warm chocolate cake with a gooey molten center.",
+  },
+  {
+    name: "Gulab Jamun (2 pcs)",
+    categories: ["Desserts"],
+    category: "Desserts",
+    price: 69,
+    description: "Soft milk-solid dumplings in rose syrup.",
+  },
+  {
+    name: "French Fries",
+    categories: ["Snacks"],
+    category: "Snacks",
+    price: 79,
+    description: "Crispy golden fries with dipping sauce.",
+  },
+  {
+    name: "Onion Rings",
+    categories: ["Snacks"],
+    category: "Snacks",
+    price: 89,
+    description: "Beer-battered onion rings, served hot.",
+  },
+  {
+    name: "Grilled Chicken Platter",
+    categories: ["Mains"],
+    category: "Mains",
+    price: 299,
+    description: "Half grilled chicken with coleslaw and fries.",
+  },
+  {
+    name: "Paneer Butter Masala",
+    categories: ["Mains"],
+    category: "Mains",
+    price: 219,
+    description: "Cottage cheese in rich tomato-butter gravy.",
+  },
+  {
+    name: "Dal Tadka + Rice",
+    categories: ["Mains"],
+    category: "Mains",
+    price: 179,
+    description: "Yellow lentils with tempered spices over steamed rice.",
+  },
+  {
+    name: "Burger + Fries + Coke",
+    categories: ["Combos", "Burgers"],
+    category: "Combos",
+    price: 249,
+    description: "Classic burger combo with fries and a chilled Coke.",
+  },
+  {
+    name: "Pizza + Salad Combo",
+    categories: ["Combos", "Pizza"],
+    category: "Combos",
+    price: 329,
+    description: "A personal pizza paired with a fresh salad.",
+  },
 ];
 
 // Tables: 3 floors × 5 tables each
@@ -75,25 +199,57 @@ const importData = async () => {
 
     // ── Users ──────────────────────────────────────────────────────────────
     const salt = await bcrypt.genSalt(10);
-    const pw   = await bcrypt.hash("Password@123", salt);
+    const pw = await bcrypt.hash("Password@123", salt);
 
     const users = await User.insertMany([
-      { name: "Admin User",    email: "admin@example.com",    password: pw, role: "admin"    },
-      { name: "Cashier User",  email: "cashier@example.com",  password: pw, role: "cashier"  },
-      { name: "Kitchen User",  email: "kitchen@example.com",  password: pw, role: "kitchen"  },
-      { name: "Priya Sharma",  email: "customer@example.com", password: pw, role: "customer" },
-      { name: "Arjun Mehta",   email: "arjun@example.com",    password: pw, role: "customer" },
-      { name: "Lakshmi Nair",  email: "lakshmi@example.com",  password: pw, role: "customer" },
+      {
+        name: "Admin User",
+        email: "admin@example.com",
+        password: pw,
+        role: "admin",
+      },
+      {
+        name: "Cashier User",
+        email: "cashier@example.com",
+        password: pw,
+        role: "cashier",
+      },
+      {
+        name: "Kitchen User",
+        email: "kitchen@example.com",
+        password: pw,
+        role: "kitchen",
+      },
+      {
+        name: "Priya Sharma",
+        email: "customer@example.com",
+        password: pw,
+        role: "customer",
+      },
+      {
+        name: "Arjun Mehta",
+        email: "arjun@example.com",
+        password: pw,
+        role: "customer",
+      },
+      {
+        name: "Lakshmi Nair",
+        email: "lakshmi@example.com",
+        password: pw,
+        role: "customer",
+      },
     ]);
     console.log(`👤 ${users.length} users seeded.`);
 
     // ── Categories ──────────────────────────────────────────────────────────
-    const catDocs = await Category.insertMany(CATEGORIES.map(name => ({ name })));
+    const catDocs = await Category.insertMany(
+      CATEGORIES.map((name) => ({ name })),
+    );
     console.log(`🏷️  ${catDocs.length} categories seeded.`);
 
     // ── Products ────────────────────────────────────────────────────────────
     const products = await Product.insertMany(
-      PRODUCTS.map(p => ({ ...p, isAvailable: true }))
+      PRODUCTS.map((p) => ({ ...p, isAvailable: true })),
     );
     console.log(`🍔 ${products.length} products seeded.`);
 
@@ -103,8 +259,8 @@ const importData = async () => {
 
     // ── Settings (UPI placeholder) ──────────────────────────────────────────
     await Settings.create({
-      upiId:    "cafeteria@upi",
-      upiName:  "Smart Cafeteria",
+      upiId: "cafeteria@upi",
+      upiName: "Smart Cafeteria",
       cafeName: "Smart Cafeteria",
       currency: "INR",
     });
@@ -118,50 +274,82 @@ const importData = async () => {
     const orderSeeds = [
       // Cash orders
       {
-        customer: customer1._id, table: tables[0], items: [products[0], products[11]],
-        qty: [2, 1], method: "cash", payStatus: "pending",
+        customer: customer1._id,
+        table: tables[0],
+        items: [products[0], products[11]],
+        qty: [2, 1],
+        method: "cash",
+        payStatus: "pending",
       },
       {
-        customer: customer2._id, table: tables[1], items: [products[12], products[6]],
-        qty: [1, 2], method: "cash", payStatus: "paid",
+        customer: customer2._id,
+        table: tables[1],
+        items: [products[12], products[6]],
+        qty: [1, 2],
+        method: "cash",
+        payStatus: "paid",
       },
       // UPI orders
       {
-        customer: customer1._id, table: tables[2], items: [products[2], products[9]],
-        qty: [1, 1], method: "upi", payStatus: "paid",
+        customer: customer1._id,
+        table: tables[2],
+        items: [products[2], products[9]],
+        qty: [1, 1],
+        method: "upi",
+        payStatus: "paid",
       },
       {
-        customer: customer3._id, table: tables[3], items: [products[16]],
-        qty: [2], method: "upi", payStatus: "upi_pending",
+        customer: customer3._id,
+        table: tables[3],
+        items: [products[16]],
+        qty: [2],
+        method: "upi",
+        payStatus: "upi_pending",
       },
       // Card orders
       {
-        customer: customer2._id, table: tables[4], items: [products[13], products[7]],
-        qty: [1, 1], method: "card", payStatus: "paid",
+        customer: customer2._id,
+        table: tables[4],
+        items: [products[13], products[7]],
+        qty: [1, 1],
+        method: "card",
+        payStatus: "paid",
       },
       {
-        customer: customer3._id, table: tables[5], items: [products[4], products[8]],
-        qty: [1, 2], method: "card", payStatus: "paid",
+        customer: customer3._id,
+        table: tables[5],
+        items: [products[4], products[8]],
+        qty: [1, 2],
+        method: "card",
+        payStatus: "paid",
       },
     ];
 
     const orders = await Promise.all(
-      orderSeeds.map(({ customer, table, items, qty, method, payStatus }, i) => {
-        const orderItems = items.map((p, j) => ({
-          productId: p._id, name: p.name, price: p.price, quantity: qty[j],
-        }));
-        const totalAmount = orderItems.reduce((s, it) => s + it.price * it.quantity, 0);
-        return Order.create({
-          orderNumber:   `ORD${Date.now()}${i}`,
-          tableNumber:   table.tableNumber,
-          customer,
-          items:         orderItems,
-          status:        payStatus === "paid" ? "preparing" : "pending",
-          paymentMethod: method,
-          paymentStatus: payStatus,
-          totalAmount,
-        });
-      })
+      orderSeeds.map(
+        ({ customer, table, items, qty, method, payStatus }, i) => {
+          const orderItems = items.map((p, j) => ({
+            productId: p._id,
+            name: p.name,
+            price: p.price,
+            quantity: qty[j],
+          }));
+          const totalAmount = orderItems.reduce(
+            (s, it) => s + it.price * it.quantity,
+            0,
+          );
+          return Order.create({
+            orderNumber: `ORD${Date.now()}${i}`,
+            tableNumber: table.tableNumber,
+            customer,
+            items: orderItems,
+            status: payStatus === "paid" ? "preparing" : "pending",
+            paymentMethod: method,
+            paymentStatus: payStatus,
+            totalAmount,
+          });
+        },
+      ),
     );
     console.log(`📦 ${orders.length} sample orders seeded.`);
 
