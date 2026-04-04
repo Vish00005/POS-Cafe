@@ -153,24 +153,36 @@ const PaymentModal = ({ total, tableNumber, onConfirm, onClose, loading }) => {
                     </div>
                   </div>
 
-                  <div className="text-center space-y-1">
-                    <div className="text-xs text-slate-500">Pay to UPI ID</div>
-                    <div className="text-sm font-mono font-bold text-indigo-400 bg-indigo-500/10 px-3 py-1 rounded-lg inline-block">
+                  <div className="text-center space-y-2">
+                    <div className="text-[11px] text-slate-500 font-bold uppercase tracking-wider italic">
+                      📸 Take a Screenshot (SS) and then Pay
+                    </div>
+                    <div className="text-sm font-mono font-bold text-indigo-400 bg-indigo-500/10 px-3 py-1 rounded-lg inline-block border border-indigo-500/10">
                       {settings.upiId}
                     </div>
-                    <div className="text-xs text-slate-500">
-                      GPay · PhonePe · Paytm · BHIM
+                    <div className="flex flex-col gap-1">
+                      <div className="text-[10px] text-slate-500">
+                        GPay · PhonePe · Paytm · BHIM
+                      </div>
+                      <div className="text-[10px] text-indigo-500 font-bold animate-pulse">
+                        🚀 Direct App Integration Coming Soon
+                      </div>
                     </div>
                   </div>
 
                   {/* Important notice */}
-                  <div className="flex items-start gap-2 bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-3 text-xs text-yellow-400">
-                    <Clock size={14} className="mt-0.5 shrink-0" />
-                    <span>
-                      After paying, tap "I Have Paid" below. Your order will be
-                      placed and a cashier will verify your payment before the
-                      kitchen prepares it.
-                    </span>
+                  <div className="space-y-2">
+                    <div className="flex items-start gap-2 bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-3 text-xs text-yellow-400">
+                      <Clock size={14} className="mt-0.5 shrink-0" />
+                      <span>
+                        After paying, tap "I Have Paid" below. Your order will
+                        be placed and a cashier will verify your payment before
+                        the kitchen prepares it.
+                      </span>
+                    </div>
+                    <div className="text-center text-[11px] text-yellow-500 font-bold bg-yellow-500/5 py-2 rounded-lg border border-yellow-500/10">
+                      ⏳ Wait for confirmation & ticket after payment
+                    </div>
                   </div>
 
                   <button

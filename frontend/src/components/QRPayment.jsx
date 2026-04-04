@@ -48,20 +48,32 @@ const QRPayment = ({ total, onPaid, upiId = 'cafe@upi', name = 'Odoo Cafeteria' 
       </div>
 
       {/* UPI ID */}
-      <div className="text-center space-y-1">
-        <div className="text-xs text-slate-500">Pay to UPI ID</div>
-        <div className="text-sm font-mono font-bold text-indigo-400 bg-indigo-500/10 px-3 py-1 rounded-lg">
+      <div className="text-center space-y-2">
+        <div className="text-xs text-slate-500 font-bold uppercase tracking-wider italic">
+          📸 Take a Screenshot (SS) and then Pay
+        </div>
+        <div className="text-sm font-mono font-bold text-indigo-400 bg-indigo-500/10 px-3 py-1.5 rounded-lg border border-indigo-500/20">
           {upiId}
         </div>
-        <div className="text-xs text-slate-500">
-          Supported: GPay · PhonePe · Paytm · BHIM
+        <div className="flex flex-col gap-1">
+          <div className="text-[10px] text-slate-500 font-medium">
+            Supported: GPay · PhonePe · Paytm · BHIM
+          </div>
+          <div className="text-[10px] text-indigo-500 font-bold animate-pulse">
+            🚀 Direct App Integration Coming Soon
+          </div>
         </div>
       </div>
 
-      {/* Security note */}
-      <div className="flex items-center gap-1.5 text-xs text-emerald-400 bg-emerald-500/10 px-3 py-2 rounded-xl">
-        <ShieldCheck size={14} />
-        Secure UPI payment — verified by NPCI
+      {/* Security & Wait note */}
+      <div className="space-y-2 w-full">
+        <div className="flex items-center justify-center gap-1.5 text-[10px] text-emerald-400 bg-emerald-500/10 px-3 py-2 rounded-xl">
+          <ShieldCheck size={12} />
+          Secure UPI payment — verified by NPCI
+        </div>
+        <div className="text-center text-[11px] text-yellow-500 font-bold bg-yellow-500/5 py-2 rounded-lg border border-yellow-500/10">
+          ⏳ Wait for confirmation & ticket after payment
+        </div>
       </div>
 
       {/* Confirm button */}
