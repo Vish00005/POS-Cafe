@@ -1,5 +1,10 @@
 import express from "express";
 const router = express.Router();
+import {
+  registerUser,
+  loginUser,
+  getMe,
+} from "../contollers/auth.controller.js";
 
 router.get("/sample", (req, res) => {
   res.send("Auth Smaple Route...");

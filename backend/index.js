@@ -7,7 +7,7 @@ import productRoute from "./routes/product.route.js";
 import orderRoute from "./routes/order.route.js";
 import tableRoute from "./routes/table.route.js";
 
-PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3001;
 
 app.get("/", (req, res) => {
   res.send("Api Running....");

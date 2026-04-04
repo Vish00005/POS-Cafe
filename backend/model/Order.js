@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema(
   {
-    orderNumber: "ORD" + Date.now(),
+    orderNumber: String,
 
     tableNumber: {
       type: Number,

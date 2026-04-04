@@ -1,4 +1,4 @@
-import Table from "../models/Table.js";
+import Table from "../model/Table.js";
 
 export const getTables = async (req, res) => {
   try {
