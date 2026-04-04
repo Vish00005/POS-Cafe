@@ -8,12 +8,15 @@ export const sendOrderReceipt = async (order) => {
   const FROM_NAME = process.env.FROM_NAME || "Odoo Cafeteria";
 
   if (!BREVO_API_KEY) {
-    console.error("❌ Brevo API Key missing. Receipt not sent.");
+    console.error(`❌ [Order ${order.orderNumber}] Brevo API Key missing. Receipt not sent.`);
     return;
   }
 
   const recipientEmail =
     order.email || (order.customer && order.customer.email);
+
+  console.log(`[Order ${order.orderNumber}] Preparing to send receipt to: ${recipientEmail || "None found"}`);
+
   if (!recipientEmail) {
     console.log("ℹ️ No recipient email found for order", order.orderNumber);
     return;

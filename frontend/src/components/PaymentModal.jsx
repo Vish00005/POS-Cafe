@@ -8,6 +8,7 @@ import {
   Loader2,
   Clock,
   CheckCircle2,
+  Mail,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import api from "../services/api";
@@ -21,6 +22,7 @@ import api from "../services/api";
 const PaymentModal = ({ total, tableNumber, onConfirm, onClose, loading }) => {
   const [step, setStep] = useState("select"); // 'select' | 'upi' | 'confirm'
   const [method, setMethod] = useState(null);
+  const [email, setEmail] = useState("");
   const [settings, setSettings] = useState({
     upiId: "",
     upiName: "Odoo Cafeteria",
@@ -171,7 +173,21 @@ const PaymentModal = ({ total, tableNumber, onConfirm, onClose, loading }) => {
                   </div>
 
                   {/* Important notice */}
-                  <div className="space-y-2">
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Receipt Email (Optional)</label>
+                      <div className="relative">
+                        <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+                        <input
+                          type="email"
+                          placeholder="customer@example.com"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          className="w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 pl-9 pr-4 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 transition-all"
+                        />
+                      </div>
+                    </div>
+
                     <div className="flex items-start gap-2 bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-3 text-xs text-yellow-400">
                       <Clock size={14} className="mt-0.5 shrink-0" />
                       <span>
@@ -186,7 +202,7 @@ const PaymentModal = ({ total, tableNumber, onConfirm, onClose, loading }) => {
                   </div>
 
                   <button
-                    onClick={() => onConfirm("upi")}
+                    onClick={() => onConfirm("upi", email)}
                     disabled={loading}
                     className="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-bold py-4 rounded-2xl transition-all shadow-lg shadow-emerald-500/20"
                   >
@@ -262,8 +278,22 @@ const PaymentModal = ({ total, tableNumber, onConfirm, onClose, loading }) => {
                 </div>
               )}
 
+              <div className="space-y-2 py-2">
+                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Receipt Email (Optional)</label>
+                <div className="relative">
+                  <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+                  <input
+                    type="email"
+                    placeholder="customer@example.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 pl-9 pr-4 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 transition-all"
+                  />
+                </div>
+              </div>
+
               <button
-                onClick={() => onConfirm(method)}
+                onClick={() => onConfirm(method, email)}
                 disabled={loading}
                 className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-bold py-4 rounded-2xl transition-all shadow-lg shadow-indigo-500/20"
               >

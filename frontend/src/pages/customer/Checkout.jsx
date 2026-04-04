@@ -254,12 +254,13 @@ const Checkout = () => {
     }));
 
   // ── Places the cafe order after payment is confirmed
-  const placeOrder = async (method) => {
+  const placeOrder = async (method, email) => {
     const { data } = await api.post("/api/v1/order", {
       tableNumber: parseInt(selectedTable),
       items: buildItems(),
       paymentMethod: method,
       customer: user._id,
+      email,
     });
     const orderTotal = total; // capture before clearCart zeroes it
     clearCart();
@@ -273,7 +274,7 @@ const Checkout = () => {
   };
 
   // ── Main payment handler — branched on method
-  const handleConfirm = async (method) => {
+  const handleConfirm = async (method, email) => {
     if (!selectedTable) return toast.error("Please select a table first");
     if (cart.length === 0) return toast.error("Your cart is empty");
     setPlacing(true);
@@ -281,13 +282,13 @@ const Checkout = () => {
     try {
       // ── CASH: direct order — kitchen waits for cashier
       if (method === "cash") {
-        await placeOrder("cash");
+        await placeOrder("cash", email);
         return;
       }
 
       // ── UPI: place order as upi_pending — cashier will confirm after verifying screenshot
       if (method === "upi") {
-        await placeOrder("upi");
+        await placeOrder("upi", email);
         return;
       }
 
@@ -314,14 +315,14 @@ const Checkout = () => {
         order_id: rzpOrder.id,
         prefill: {
           name: user?.name || "Customer",
-          email: user?.email || "customer@cafe.com",
+          email: email || user?.email || "customer@cafe.com",
         },
         theme: { color: "#6366f1" },
         method: { upi: false, card: true, netbanking: false, wallet: false },
 
         handler: async () => {
           try {
-            await placeOrder("card");
+            await placeOrder("card", email);
           } catch (err) {
             toast.error(
               err.response?.data?.message ||

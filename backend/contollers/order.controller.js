@@ -89,8 +89,9 @@ export const updatePaymentStatus = async (req, res) => {
 
     // Send Receipt if marked as paid
     if (paymentStatus === "paid") {
+      console.log(`[Order ${order.orderNumber}] Status: PAID. Triggering receipt...`);
       const populatedOrder = await Order.findById(order._id).populate("customer", "name email");
-      sendOrderReceipt(populatedOrder).catch(err => console.error("Email error:", err));
+      sendOrderReceipt(populatedOrder).catch(err => console.error("Email error for order", order.orderNumber, ":", err));
     }
 
     res.json(order);
@@ -118,8 +119,9 @@ export const confirmUpiPayment = async (req, res) => {
 
     // Send Receipt on approval
     if (action === "approve") {
+      console.log(`[Order ${order.orderNumber}] UPI Approved. Triggering receipt...`);
       const populatedOrder = await Order.findById(order._id).populate("customer", "name email");
-      sendOrderReceipt(populatedOrder).catch(err => console.error("Email error:", err));
+      sendOrderReceipt(populatedOrder).catch(err => console.error("Email error for UPI order", order.orderNumber, ":", err));
     }
 
     res.json(order);
