@@ -55,7 +55,7 @@ const buildTables = () => {
         seats: num % 2 === 0 ? 2 : 4,
         isOccupied: false,
         isActive: true,
-        qrCode: `http://localhost:5173/menu?table=${tableNumber}`,
+        qrCode: `https://pos-cafe-mocha.vercel.app/menu?table=${tableNumber}`,
       });
     }
   }

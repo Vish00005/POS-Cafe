@@ -50,6 +50,7 @@ const AppLayout = ({ children }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [expanded, setExpanded] = useState(false);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
   const navItems = roleNav[user?.role] || [];
 
   const handleLogout = () => {
@@ -57,14 +58,31 @@ const AppLayout = ({ children }) => {
     navigate("/login");
   };
 
+  const closeMobile = () => setIsMobileOpen(false);
+
   return (
     <div className="flex h-screen bg-slate-950 text-white overflow-hidden">
-      {/* ── Left Icon Rail ── */}
+      {/* ── Mobile Overlay ── */}
+      {isMobileOpen && (
+        <div
+          className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-40 lg:hidden"
+          onClick={closeMobile}
+        />
+      )}
+
+      {/* ── Sidebar (Desktop: Fixed Rail | Mobile: Drawer) ── */}
       <aside
-        className={`shrink-0 flex flex-col bg-slate-900 border-r border-slate-800 transition-all duration-300 z-40 ${expanded ? "w-56" : "w-16"}`}
+        className={`
+          fixed inset-y-0 left-0 z-50 shrink-0 flex flex-col bg-slate-900 border-r border-slate-800 transition-all duration-300
+          lg:relative lg:translate-x-0
+          ${isMobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
+          ${expanded ? "w-64" : "w-16"}
+          ${!expanded && !isMobileOpen ? "w-0 lg:w-16" : ""}
+          ${isMobileOpen ? "w-64" : ""}
+        `}
       >
-        {/* Logo + toggle */}
-        <div className="flex items-center h-16 px-3 border-b border-slate-800 gap-3 overflow-hidden">
+        {/* Logo + toggle (Desktop only) */}
+        <div className="hidden lg:flex items-center h-16 px-3 border-b border-slate-800 gap-3 overflow-hidden">
           <button
             onClick={() => setExpanded(!expanded)}
             className="w-10 h-10 shrink-0 flex items-center justify-center rounded-xl bg-indigo-600 text-white hover:bg-indigo-500 transition-all"
@@ -78,12 +96,21 @@ const AppLayout = ({ children }) => {
           )}
         </div>
 
+        {/* Logo + Close (Mobile only) */}
+        <div className="flex lg:hidden items-center h-16 px-4 border-b border-slate-800 justify-between">
+          <span className="text-sm font-bold text-white">☕ Smart Cafeteria</span>
+          <button onClick={closeMobile} className="text-slate-400">
+            <X size={20} />
+          </button>
+        </div>
+
         {/* Nav items */}
         <nav className="flex-1 py-3 space-y-1 px-2 overflow-y-auto overflow-x-hidden">
           {navItems.map(({ to, icon: Icon, label }) => (
             <NavLink
               key={to}
               to={to}
+              onClick={closeMobile}
               end={
                 to === "/admin" ||
                 to === "/pos" ||
@@ -91,23 +118,25 @@ const AppLayout = ({ children }) => {
                 to === "/menu"
               }
               className={({ isActive }) =>
-                `flex items-center gap-3 px-2 py-2.5 rounded-xl transition-all group overflow-hidden whitespace-nowrap ${
+                `flex items-center gap-3 px-2.5 py-3 rounded-xl transition-all group overflow-hidden whitespace-nowrap ${
                   isActive
-                    ? "bg-indigo-600 text-white"
+                    ? "bg-indigo-600 text-white shadow-lg shadow-indigo-500/20"
                     : "text-slate-400 hover:bg-slate-800 hover:text-white"
                 }`
               }
             >
               <Icon size={18} className="shrink-0" />
-              {expanded && <span className="text-sm font-medium">{label}</span>}
+              {(expanded || isMobileOpen) && (
+                <span className="text-sm font-medium">{label}</span>
+              )}
             </NavLink>
           ))}
         </nav>
 
         {/* User + logout */}
         <div className="border-t border-slate-800 p-2 space-y-1 overflow-hidden">
-          {expanded && (
-            <div className="px-2 py-1.5">
+          {(expanded || isMobileOpen) && (
+            <div className="px-3 py-2">
               <div className="text-xs font-semibold text-white truncate">
                 {user?.name}
               </div>
@@ -118,16 +147,36 @@ const AppLayout = ({ children }) => {
           )}
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-2 py-2.5 rounded-xl text-slate-400 hover:bg-red-500/10 hover:text-red-400 transition-all overflow-hidden whitespace-nowrap"
+            className="w-full flex items-center gap-3 px-2.5 py-3 rounded-xl text-slate-400 hover:bg-red-500/10 hover:text-red-400 transition-all overflow-hidden whitespace-nowrap"
           >
             <LogOut size={18} className="shrink-0" />
-            {expanded && <span className="text-sm font-medium">Logout</span>}
+            {(expanded || isMobileOpen) && (
+              <span className="text-sm font-medium">Logout</span>
+            )}
           </button>
         </div>
       </aside>
 
-      {/* ── Main Content ── */}
-      <main className="flex-1 overflow-y-auto min-w-0">{children}</main>
+      {/* ── Main Content Area ── */}
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* ── Mobile Top Bar ── */}
+        <header className="lg:hidden flex items-center justify-between h-14 px-4 bg-slate-900 border-b border-slate-800 shrink-0 z-30">
+          <button
+            onClick={() => setIsMobileOpen(true)}
+            className="p-2 -ml-2 text-slate-400 hover:text-white"
+          >
+            <MenuIcon size={20} />
+          </button>
+          <span className="text-sm font-bold text-white">Smart Cafeteria</span>
+          <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-[10px] font-bold">
+            {user?.name?.charAt(0) || "U"}
+          </div>
+        </header>
+
+        <main className="flex-1 overflow-y-auto">
+          {children}
+        </main>
+      </div>
     </div>
   );
 };

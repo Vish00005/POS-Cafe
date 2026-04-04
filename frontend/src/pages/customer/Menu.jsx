@@ -73,7 +73,7 @@ const Menu = () => {
 
   return (
     <Layout>
-      <div className="flex flex-col h-screen overflow-hidden slide-in">
+      <div className="flex flex-col h-full overflow-hidden slide-in">
         {/* ── Top Bar ── */}
         <div className="bg-slate-900/95 backdrop-blur border-b border-slate-800 px-4 pt-4 pb-3 space-y-3 shrink-0">
           <div className="flex items-center justify-between">

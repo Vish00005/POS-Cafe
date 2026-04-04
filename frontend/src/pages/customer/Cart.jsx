@@ -16,7 +16,7 @@ const Cart = () => {
 
   return (
     <Layout>
-      <div className="flex flex-col h-screen overflow-hidden slide-in">
+      <div className="flex flex-col h-full overflow-hidden slide-in">
         {/* Header */}
         <div className="shrink-0 bg-slate-900/95 border-b border-slate-800 px-4 py-4">
           <div className="flex items-center gap-3">

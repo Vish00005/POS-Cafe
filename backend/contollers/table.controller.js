@@ -23,7 +23,7 @@ export const createTable = async (req, res) => {
       seats,
       floor,
       isOccupied: false,
-      qrCode: `${process.env.CLIENT_URL || "http://localhost:5173"}/menu?table=${tableNumber}`,
+      qrCode: `${process.env.CLIENT_URL || "https://pos-cafe-mocha.vercel.app"}/menu?table=${tableNumber}`,
     });
 
     res.status(201).json(table);
