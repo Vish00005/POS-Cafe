@@ -6,7 +6,9 @@ import authRoute from "./routes/auth.route.js";
 import productRoute from "./routes/product.route.js";
 import orderRoute from "./routes/order.route.js";
 import tableRoute from "./routes/table.route.js";
+import connectDB from "./config/db.config.js";
 
+connectDB();
 const PORT = process.env.PORT || 3001;
 
 app.get("/", (req, res) => {
