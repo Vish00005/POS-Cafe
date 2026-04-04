@@ -2,118 +2,158 @@ import { useState, useEffect } from 'react';
 import api from '../../services/api';
 import Layout from '../../components/Layout';
 import Spinner from '../../components/Spinner';
-import { TrendingUp, ShoppingBag, DollarSign, Clock, CheckCircle, AlertCircle } from 'lucide-react';
+import {
+  AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
+} from 'recharts';
+import { TrendingUp, ShoppingBag, IndianRupee, Clock, Users, AlertCircle } from 'lucide-react';
 
-const StatCard = ({ label, value, icon: Icon, color, sub }) => (
-  <div className={`glass rounded-2xl p-5 border-l-4 ${color} card-hover`}>
-    <div className="flex items-start justify-between">
-      <div>
-        <p className="text-slate-400 text-sm">{label}</p>
-        <p className="text-3xl font-bold text-white mt-1">{value}</p>
-        {sub && <p className="text-xs text-slate-500 mt-1">{sub}</p>}
-      </div>
-      <div className={`p-2.5 rounded-xl bg-slate-800`}>
-        <Icon size={22} className="text-indigo-400" />
-      </div>
+const COLORS = ['#f59e0b', '#6366f1', '#22c55e', '#ec4899'];
+
+const StatCard = ({ icon: Icon, label, value, sub, color = 'indigo' }) => (
+  <div className="glass rounded-2xl p-5 flex items-center gap-4">
+    <div className={`w-12 h-12 rounded-xl bg-${color}-500/20 flex items-center justify-center shrink-0`}>
+      <Icon size={22} className={`text-${color}-400`} />
+    </div>
+    <div>
+      <div className="text-2xl font-black text-white">{value}</div>
+      <div className="text-sm text-slate-400">{label}</div>
+      {sub && <div className="text-xs text-slate-500 mt-0.5">{sub}</div>}
     </div>
   </div>
 );
 
-const AdminDashboard = () => {
-  const [orders, setOrders] = useState([]);
+const Dashboard = () => {
+  const [analytics, setAnalytics] = useState(null);
+  const [recentOrders, setRecentOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.get('/api/v1/order')
-      .then(({ data }) => setOrders(data))
-      .catch(() => {})
+    Promise.all([
+      api.get('/api/v1/order/analytics'),
+      api.get('/api/v1/order?'),
+    ])
+      .then(([a, o]) => {
+        setAnalytics(a.data);
+        setRecentOrders(o.data.slice(0, 8));
+      })
+      .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
 
-  const totalRevenue = orders
-    .filter(o => o.paymentStatus === 'paid')
-    .reduce((acc, o) => acc + o.totalAmount, 0);
-  const pending = orders.filter(o => o.paymentStatus === 'pending').length;
-  const completed = orders.filter(o => o.status === 'completed').length;
+  if (loading) return <Layout><div className="flex justify-center items-center h-screen"><Spinner size="lg" /></div></Layout>;
 
-  const recentOrders = [...orders].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 8);
-
-  const statusColors = {
-    pending: 'bg-yellow-500/20 text-yellow-400',
-    preparing: 'bg-blue-500/20 text-blue-400',
-    completed: 'bg-green-500/20 text-green-400',
-  };
-  const payColors = {
-    pending: 'bg-red-500/20 text-red-400',
-    paid: 'bg-green-500/20 text-green-400',
-  };
+  const { revenueByDay = [], statusBreakdown = [], paymentBreakdown = [], totalOrders = 0, totalRevenue = 0 } = analytics || {};
+  const upiPending = recentOrders.filter(o => o.paymentStatus === 'upi_pending').length;
 
   return (
     <Layout>
       <div className="p-6 space-y-6 slide-in">
+        {/* Header */}
         <div>
-          <h1 className="text-2xl font-bold text-white">Dashboard</h1>
-          <p className="text-slate-400 text-sm mt-0.5">Overview of your cafeteria operations</p>
+          <h1 className="text-2xl font-black text-white">Dashboard</h1>
+          <p className="text-slate-400 text-sm mt-0.5">Welcome back — here's your cafeteria at a glance</p>
         </div>
 
-        {loading ? (
-          <div className="flex justify-center py-20"><Spinner size="lg" /></div>
-        ) : (
-          <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-              <StatCard label="Total Orders" value={orders.length} icon={ShoppingBag} color="border-indigo-500" />
-              <StatCard label="Revenue" value={`₹${totalRevenue.toFixed(2)}`} icon={DollarSign} color="border-emerald-500" sub="Paid orders only" />
-              <StatCard label="Pending Payment" value={pending} icon={Clock} color="border-yellow-500" />
-              <StatCard label="Completed" value={completed} icon={CheckCircle} color="border-green-500" />
-            </div>
-
-            {/* Recent Orders */}
-            <div className="glass rounded-2xl p-5">
-              <h2 className="text-lg font-semibold text-white mb-4">Recent Orders</h2>
-              {recentOrders.length === 0 ? (
-                <div className="text-center py-10 text-slate-500">No orders yet</div>
-              ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="border-b border-slate-700">
-                        {['Order #', 'Table', 'Items', 'Total', 'Status', 'Payment', 'Time'].map(h => (
-                          <th key={h} className="pb-3 text-left text-slate-400 font-medium">{h}</th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-800">
-                      {recentOrders.map((o) => (
-                        <tr key={o._id} className="hover:bg-slate-800/50 transition-colors">
-                          <td className="py-3 text-indigo-400 font-mono text-xs">{o.orderNumber}</td>
-                          <td className="py-3 text-slate-300">T{o.tableNumber}</td>
-                          <td className="py-3 text-slate-300">{o.items?.length}</td>
-                          <td className="py-3 text-white font-medium">₹{o.totalAmount?.toFixed(2)}</td>
-                          <td className="py-3">
-                            <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${statusColors[o.status]}`}>
-                              {o.status}
-                            </span>
-                          </td>
-                          <td className="py-3">
-                            <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${payColors[o.paymentStatus]}`}>
-                              {o.paymentStatus}
-                            </span>
-                          </td>
-                          <td className="py-3 text-slate-500 text-xs">
-                            {new Date(o.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
-          </>
+        {/* UPI alert */}
+        {upiPending > 0 && (
+          <div className="flex items-center gap-3 bg-yellow-500/10 border border-yellow-500/30 rounded-2xl p-4 text-yellow-400">
+            <AlertCircle size={20} />
+            <span className="text-sm font-medium">{upiPending} UPI payment{upiPending > 1 ? 's' : ''} awaiting cashier confirmation</span>
+          </div>
         )}
+
+        {/* Stat cards */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <StatCard icon={ShoppingBag}  label="Total Orders"    value={totalOrders}               color="indigo" />
+          <StatCard icon={IndianRupee}  label="Revenue (Paid)"  value={`₹${totalRevenue.toFixed(0)}`} color="emerald" />
+          <StatCard icon={Clock}        label="UPI Pending"     value={upiPending}                color="yellow" />
+          <StatCard icon={TrendingUp}   label="Today's Orders"  value={revenueByDay[6]?.orders || 0} color="purple" />
+        </div>
+
+        {/* Charts row */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Revenue area chart */}
+          <div className="lg:col-span-2 glass rounded-2xl p-5">
+            <h2 className="text-sm font-semibold text-white mb-4">Revenue — Last 7 Days</h2>
+            <ResponsiveContainer width="100%" height={200}>
+              <AreaChart data={revenueByDay}>
+                <defs>
+                  <linearGradient id="rev" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%"  stopColor="#6366f1" stopOpacity={0.4} />
+                    <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+                <XAxis dataKey="day" tick={{ fill: '#64748b', fontSize: 11 }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fill: '#64748b', fontSize: 11 }} axisLine={false} tickLine={false} />
+                <Tooltip contentStyle={{ background: '#0f172a', border: '1px solid #334155', borderRadius: 12, color: '#f1f5f9' }} />
+                <Area type="monotone" dataKey="revenue" stroke="#6366f1" strokeWidth={2} fill="url(#rev)" />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Status breakdown pie */}
+          <div className="glass rounded-2xl p-5">
+            <h2 className="text-sm font-semibold text-white mb-4">Order Status</h2>
+            <ResponsiveContainer width="100%" height={200}>
+              <PieChart>
+                <Pie data={statusBreakdown} dataKey="value" cx="50%" cy="50%" outerRadius={75} label={({ name, value }) => value > 0 ? `${name}: ${value}` : ''} labelLine={false}>
+                  {statusBreakdown.map((e, i) => <Cell key={i} fill={COLORS[i]} />)}
+                </Pie>
+                <Tooltip contentStyle={{ background: '#0f172a', border: '1px solid #334155', borderRadius: 12, color: '#f1f5f9' }} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Payment breakdown + recent orders */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Payment bar chart */}
+          <div className="glass rounded-2xl p-5">
+            <h2 className="text-sm font-semibold text-white mb-4">Payment Methods</h2>
+            <ResponsiveContainer width="100%" height={180}>
+              <BarChart data={paymentBreakdown} barCategoryGap="30%">
+                <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+                <XAxis dataKey="name" tick={{ fill: '#64748b', fontSize: 11 }} axisLine={false} />
+                <YAxis tick={{ fill: '#64748b', fontSize: 11 }} axisLine={false} tickLine={false} />
+                <Tooltip contentStyle={{ background: '#0f172a', border: '1px solid #334155', borderRadius: 12, color: '#f1f5f9' }} />
+                <Bar dataKey="value" radius={[6, 6, 0, 0]}>
+                  {paymentBreakdown.map((_, i) => <Cell key={i} fill={COLORS[i]} />)}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Recent orders */}
+          <div className="lg:col-span-2 glass rounded-2xl p-5">
+            <h2 className="text-sm font-semibold text-white mb-4">Recent Orders</h2>
+            <div className="space-y-2">
+              {recentOrders.length === 0 ? (
+                <p className="text-slate-500 text-sm text-center py-8">No orders yet</p>
+              ) : recentOrders.map(o => (
+                <div key={o._id} className="flex items-center justify-between py-2 border-b border-slate-800/60 last:border-0">
+                  <div>
+                    <span className="text-sm font-mono text-indigo-400">{o.orderNumber}</span>
+                    <span className="text-xs text-slate-500 ml-2">Table {o.tableNumber}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                      o.paymentStatus === 'paid' ? 'bg-green-500/20 text-green-400' :
+                      o.paymentStatus === 'upi_pending' ? 'bg-yellow-500/20 text-yellow-400' :
+                      o.paymentStatus === 'upi_failed' ? 'bg-red-500/20 text-red-400' :
+                      'bg-slate-700 text-slate-400'
+                    }`}>{o.paymentStatus}</span>
+                    <span className="text-sm font-bold text-white">₹{o.totalAmount}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </Layout>
   );
 };
 
-export default AdminDashboard;
+export default Dashboard;

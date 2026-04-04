@@ -273,30 +273,27 @@ const Checkout = () => {
     setPlacing(true);
 
     try {
-      // ── CASH: place order directly — kitchen waits for cashier to confirm payment
+      // ── CASH: direct order — kitchen waits for cashier
       if (method === "cash") {
         await placeOrder("cash");
         return;
       }
 
-      // ── UPI / CARD: open Razorpay popup first, create order only on success
-      const loaded = await loadRazorpay();
-      if (!loaded) {
-        toast.error(
-          "Failed to load payment gateway. Check your internet connection.",
-        );
+      // ── UPI: place order as upi_pending — cashier will confirm after verifying screenshot
+      if (method === "upi") {
+        await placeOrder("upi");
         return;
       }
 
-      // Step 1: Create a Razorpay order on our backend
-      const { data: rzpOrder } = await api.post(
-        "/api/v1/payment/create-order",
-        {
-          amount: total, // backend converts to paise
-        },
-      );
+      // ── CARD: open Razorpay popup (card only)
+      const loaded = await loadRazorpay();
+      if (!loaded) {
+        toast.error("Failed to load payment gateway. Check your internet connection.");
+        return;
+      }
 
-      // Step 2: Open Razorpay checkout popup
+      const { data: rzpOrder } = await api.post("/api/v1/payment/create-order", { amount: total });
+
       const options = {
         key: import.meta.env.VITE_RAZORPAY_KEY,
         amount: rzpOrder.amount,
@@ -304,28 +301,15 @@ const Checkout = () => {
         name: "Smart Cafeteria",
         description: `Table ${selectedTable} Order`,
         order_id: rzpOrder.id,
-        prefill: {
-          name: user?.name || "Customer",
-          email: user?.email || "customer@cafe.com",
-        },
+        prefill: { name: user?.name || "Customer", email: user?.email || "customer@cafe.com" },
         theme: { color: "#6366f1" },
-        // Only show the chosen payment method in the Razorpay popup
-        method: {
-          upi: method === "upi",
-          card: false,
-          netbanking: false,
-          wallet: false,
-        },
+        method: { upi: false, card: true, netbanking: false, wallet: false },
 
-        // Step 3: On payment success → create the cafe order
         handler: async () => {
           try {
-            await placeOrder(method);
+            await placeOrder("card");
           } catch (err) {
-            toast.error(
-              err.response?.data?.message ||
-                "Order creation failed after payment",
-            );
+            toast.error(err.response?.data?.message || "Order creation failed after payment");
           } finally {
             setPlacing(false);
           }
@@ -333,16 +317,13 @@ const Checkout = () => {
       };
 
       const rzp = new window.Razorpay(options);
-
-      // Step 4: On payment failure
       rzp.on("payment.failed", (response) => {
-        toast.error(
-          `Payment failed: ${response.error?.description || "Please try again"}`,
-        );
+        toast.error(`Payment failed: ${response.error?.description || "Please try again"}`);
         setPlacing(false);
       });
 
       rzp.open();
+      return;
       // Note: setPlacing(false) is handled inside handler / payment.failed callbacks above
       return; // don't fall through to the finally block for async Razorpay flow
     } catch (err) {
