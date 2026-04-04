@@ -1,4 +1,5 @@
 import { useCart } from "../context/CartContext";
+import { useNavigate } from "react-router-dom";
 import { Plus, Minus, Star } from "lucide-react";
 import toast from "react-hot-toast";
 import { useState } from "react";
