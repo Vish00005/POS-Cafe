@@ -86,8 +86,11 @@ function App() {
             } />
 
             {/* ── Customer ── */}
+            {/* ── Customer (Public/Browse) ── */}
+            <Route path="/menu" element={<Menu />} />
+
+            {/* ── Customer (Protected) ── */}
             {[
-              { path: "/menu",           element: <Menu /> },
               { path: "/menu/cart",      element: <Cart /> },
               { path: "/menu/checkout",  element: <Checkout /> },
               { path: "/menu/orders",    element: <MyOrders /> },

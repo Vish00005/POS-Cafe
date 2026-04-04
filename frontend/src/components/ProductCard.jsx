@@ -3,11 +3,17 @@ import { Plus, Minus, Star } from "lucide-react";
 import toast from "react-hot-toast";
 import { useState } from "react";
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, isGuest }) => {
   const { cart, addToCart, updateQuantity } = useCart();
+  const navigate = useNavigate();
   const inCart = cart.find((i) => i._id === product._id);
 
   const handleAdd = () => {
+    if (isGuest) {
+      toast("Please login to start ordering", { icon: "🔐" });
+      navigate("/login");
+      return;
+    }
     addToCart(product);
     toast.success(`${product.name} added!`, { duration: 800, icon: "🛒" });
   };
@@ -15,14 +21,14 @@ const ProductCard = ({ product }) => {
   return (
     <div className="glass rounded-2xl overflow-hidden card-hover flex flex-col group">
       {/* Image */}
-      <div className="relative h-36 bg-slate-800/80 flex items-center justify-center overflow-hidden">
+      <div className="relative h-48 bg-slate-800/80 flex items-center justify-center overflow-hidden">
         <img
           src={
             product.img ||
             "https://cdn-icons-png.flaticon.com/128/8633/8633559.png"
           }
           alt={product.name}
-          className="w-24 h-24 object-contain group-hover:scale-110 transition-transform duration-300"
+          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
           onError={(e) => {
             e.target.src =
               "https://cdn-icons-png.flaticon.com/128/8633/8633559.png";

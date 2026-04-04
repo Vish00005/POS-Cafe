@@ -5,7 +5,8 @@ import Layout from "../../components/Layout";
 import Spinner from "../../components/Spinner";
 import ProductCard from "../../components/ProductCard";
 import { useCart } from "../../context/CartContext";
-import { ShoppingCart, Search, QrCode, ClipboardList } from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
+import { ShoppingCart, Search, QrCode, ClipboardList, LogIn } from "lucide-react";
 import toast from "react-hot-toast";
 
 const Menu = () => {
@@ -19,6 +20,7 @@ const Menu = () => {
   const [activeCategory, setActiveCategory] = useState("All");
   const [search, setSearch] = useState("");
   const { cart, total } = useCart();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -121,20 +123,31 @@ const Menu = () => {
               >
                 <ClipboardList size={20} />
               </button>
-              <button
-                onClick={() =>
-                  navigate(`/menu/cart${table ? `?table=${table}` : ""}`)
-                }
-                className="relative flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2.5 rounded-xl text-sm font-medium transition-all active:scale-95 shadow-lg shadow-indigo-500/10"
-              >
-                <ShoppingCart size={16} />
-                Cart
-                {totalItems > 0 && (
-                  <span className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white text-[10px] rounded-full flex items-center justify-center font-bold shadow-lg ring-2 ring-slate-900">
-                    {totalItems}
-                  </span>
-                )}
-              </button>
+              {user && (
+                <button
+                  onClick={() =>
+                    navigate(`/menu/cart${table ? `?table=${table}` : ""}`)
+                  }
+                  className="relative flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2.5 rounded-xl text-sm font-medium transition-all active:scale-95 shadow-lg shadow-indigo-500/10"
+                >
+                  <ShoppingCart size={16} />
+                  Cart
+                  {totalItems > 0 && (
+                    <span className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white text-[10px] rounded-full flex items-center justify-center font-bold shadow-lg ring-2 ring-slate-900">
+                      {totalItems}
+                    </span>
+                  )}
+                </button>
+              )}
+              {!user && (
+                <button
+                  onClick={() => navigate("/login")}
+                  className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white px-4 py-2.5 rounded-xl text-sm font-bold transition-all active:scale-95 border border-white/5"
+                >
+                  <LogIn size={16} className="text-indigo-400" />
+                  Sign In
+                </button>
+              )}
             </div>
           </div>
 
@@ -185,14 +198,14 @@ const Menu = () => {
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
               {filtered.map((p) => (
-                <ProductCard key={p._id} product={p} />
+                <ProductCard key={p._id} product={p} isGuest={!user} />
               ))}
             </div>
           )}
         </div>
 
-        {/* ── Sticky Cart Bar ── */}
-        {totalItems > 0 && (
+        {/* ── Sticky Cart Bar / Login Call ── */}
+        {totalItems > 0 && user && (
           <div className="shrink-0 px-4 pb-4 pt-3 bg-slate-900 border-t border-slate-800">
             <button
               onClick={() =>
@@ -205,6 +218,18 @@ const Menu = () => {
               </span>
               <span>View Cart →</span>
               <span className="font-bold">₹{total.toFixed(2)}</span>
+            </button>
+          </div>
+        )}
+
+        {!user && (
+          <div className="shrink-0 px-4 pb-4 pt-3 bg-slate-900 border-t border-slate-800">
+             <button
+              onClick={() => navigate("/login")}
+              className="w-full flex items-center justify-center gap-3 bg-indigo-600/10 border border-indigo-500/20 text-indigo-400 py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-indigo-600 hover:text-white transition-all shadow-xl"
+            >
+              <LogIn size={16} />
+              Login to start ordering
             </button>
           </div>
         )}
