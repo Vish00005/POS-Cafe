@@ -1,9 +1,10 @@
 import Order from "../model/Order.js";
 import { occupyTableByNumber } from "./table.controller.js";
+import { sendOrderReceipt } from "../utils/emailService.js";
 
 export const createOrder = async (req, res) => {
   try {
-    const { tableNumber, items, paymentMethod, customer } = req.body;
+    const { tableNumber, items, paymentMethod, customer, email } = req.body;
     const totalAmount = items.reduce((acc, i) => acc + i.price * i.quantity, 0);
 
     // UPI orders start as upi_pending — cashier must confirm before kitchen gets them
@@ -20,6 +21,7 @@ export const createOrder = async (req, res) => {
       paymentMethod,
       paymentStatus,
       totalAmount,
+      email,
     });
 
     // Mark table occupied for cash/card immediately; for UPI, mark after confirmation
@@ -77,11 +79,20 @@ export const updateOrderStatus = async (req, res) => {
 
 export const updatePaymentStatus = async (req, res) => {
   try {
-    const { paymentStatus } = req.body;
+    const { paymentStatus, email } = req.body;
     const order = await Order.findById(req.params.id);
     if (!order) return res.status(404).json({ message: "Order not found" });
+
+    if (email) order.email = email;
     order.paymentStatus = paymentStatus;
     await order.save();
+
+    // Send Receipt if marked as paid
+    if (paymentStatus === "paid") {
+      const populatedOrder = await Order.findById(order._id).populate("customer", "name email");
+      sendOrderReceipt(populatedOrder).catch(err => console.error("Email error:", err));
+    }
+
     res.json(order);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -104,6 +115,13 @@ export const confirmUpiPayment = async (req, res) => {
     }
 
     await order.save();
+
+    // Send Receipt on approval
+    if (action === "approve") {
+      const populatedOrder = await Order.findById(order._id).populate("customer", "name email");
+      sendOrderReceipt(populatedOrder).catch(err => console.error("Email error:", err));
+    }
+
     res.json(order);
   } catch (error) {
     res.status(500).json({ message: error.message });

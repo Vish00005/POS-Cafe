@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import Layout from '../../components/Layout';
 import Spinner from '../../components/Spinner';
-import { CreditCard, Banknote, Smartphone, CheckCircle, ArrowLeft } from 'lucide-react';
+import { CreditCard, Banknote, Smartphone, CheckCircle, ArrowLeft, Mail } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const PaymentScreen = () => {
@@ -13,6 +13,7 @@ const PaymentScreen = () => {
   const [payMethod, setPayMethod] = useState('cash');
   const [processing, setProcessing] = useState(false);
   const [paid, setPaid] = useState(false);
+  const [email, setEmail] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,6 +30,7 @@ const PaymentScreen = () => {
     try {
       await api.put(`/api/v1/order/${id}/payment`, {
         paymentStatus: 'paid',
+        email: email || order.email, // Use new email or existing one
       });
       setPaid(true);
       toast.success('Payment successful!');
@@ -100,6 +102,20 @@ const PaymentScreen = () => {
                     <span className="text-sm font-medium">{label}</span>
                   </button>
                 ))}
+              </div>
+
+              <div className="space-y-2 pt-2">
+                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Receipt Email (Optional)</label>
+                <div className="relative">
+                  <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+                  <input
+                    type="email"
+                    placeholder="customer@example.com"
+                    value={email || (order.email || '')}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full bg-slate-800 border border-slate-700 rounded-xl py-2 pl-9 pr-4 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 transition-all"
+                  />
+                </div>
               </div>
 
               <button

@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 const orderSchema = new mongoose.Schema(
   {
     orderNumber: String,
+    email: String, // Guest email for receipts
 
     tableNumber: {
       type: Number,

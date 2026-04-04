@@ -10,6 +10,7 @@ import {
   ShoppingBag,
   ArrowLeft,
   Send,
+  Mail,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext";
@@ -22,6 +23,7 @@ const OrderScreen = () => {
   const [loading, setLoading] = useState(true);
   const [placing, setPlacing] = useState(false);
   const [activeCategory, setActiveCategory] = useState("All");
+  const [customerEmail, setCustomerEmail] = useState("");
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -78,6 +80,7 @@ const OrderScreen = () => {
         items,
         paymentMethod: "cash",
         customer: user._id,
+        email: customerEmail,
       });
       toast.success(`Order ${data.orderNumber} placed!`);
       navigate(`/pos/payment/${data._id}`);
@@ -233,8 +236,23 @@ const OrderScreen = () => {
             )}
           </div>
 
-          <div className="p-4 border-t border-slate-800 space-y-3">
-            <div className="flex justify-between text-lg font-bold text-white">
+          <div className="p-4 border-t border-slate-800 space-y-4">
+            {cart.length > 0 && (
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Receipt Email (Optional)</label>
+                <div className="relative">
+                  <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+                  <input
+                    type="email"
+                    placeholder="customer@example.com"
+                    value={customerEmail}
+                    onChange={(e) => setCustomerEmail(e.target.value)}
+                    className="w-full bg-slate-800 border border-slate-700 rounded-xl py-2 pl-9 pr-4 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 transition-all"
+                  />
+                </div>
+              </div>
+            )}
+            <div className="flex justify-between text-lg font-bold text-white pt-2">
               <span>Total</span>
               <span>₹{total.toFixed(2)}</span>
             </div>
