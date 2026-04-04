@@ -1,4 +1,3 @@
-// models/Table.js
 import mongoose from "mongoose";
 
 const tableSchema = new mongoose.Schema(
@@ -8,15 +7,21 @@ const tableSchema = new mongoose.Schema(
       unique: true,
     },
     seats: Number,
-
-    qrCode: String, // store QR URL or base64
-
+    floor: {
+      type: Number,
+      default: 1,
+    },
+    qrCode: String,
     isActive: {
       type: Boolean,
       default: true,
     },
+    isOccupied: {
+      type: Boolean,
+      default: false,
+    },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
 export default mongoose.model("Table", tableSchema);

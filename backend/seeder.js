@@ -1,14 +1,12 @@
+import "dotenv/config";
 import mongoose from "mongoose";
-import dotenv from "dotenv";
 import bcrypt from "bcryptjs";
 import User from "./model/User.js";
 import Product from "./model/Product.js";
 import Table from "./model/Table.js";
 import Order from "./model/Order.js";
 
-dotenv.config();
-
-const MONGO_URI = process.env.MONGO_URL || "mongodb://127.0.0.1:27017/odoo_pos";
+const MONGO_URL = process.env.MONGO_URL || "mongodb://127.0.0.1:27017/odoo_pos";
 
 mongoose
   .connect(MONGO_URI)

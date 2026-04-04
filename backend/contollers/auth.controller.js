@@ -7,9 +7,9 @@ const sendTokenResponse = (user, res) => {
 
   res.cookie("token", token, {
     httpOnly: true,
-    secure: false, // set true in production (HTTPS)
+    secure: false,
     sameSite: "lax",
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 
   res.status(200).json({
@@ -22,7 +22,7 @@ const sendTokenResponse = (user, res) => {
 
 export const registerUser = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password } = req.body;
 
     const userExists = await User.findOne({ email });
     if (userExists) {
@@ -35,7 +35,7 @@ export const registerUser = async (req, res) => {
       name,
       email,
       password: hashedPassword,
-      role,
+      role: "customer",
     });
 
     sendTokenResponse(user, res);
