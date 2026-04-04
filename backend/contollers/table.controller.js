@@ -18,12 +18,13 @@ export const createTable = async (req, res) => {
       return res.status(400).json({ message: `Table ${tableNumber} already exists` });
     }
 
+    const baseUrl = (process.env.CLIENT_URL || "https://pos-cafe-mocha.vercel.app").replace(/\/$/, "");
     const table = await Table.create({
       tableNumber,
       seats,
       floor,
       isOccupied: false,
-      qrCode: `${process.env.CLIENT_URL || "https://pos-cafe-mocha.vercel.app"}/menu?table=${tableNumber}`,
+      qrCode: `${baseUrl}/menu?table=${tableNumber}`,
     });
 
     res.status(201).json(table);

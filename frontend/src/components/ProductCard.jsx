@@ -1,6 +1,7 @@
 import { useCart } from "../context/CartContext";
-import { Plus, Minus, ShoppingCart } from "lucide-react";
+import { Plus, Minus, Star } from "lucide-react";
 import toast from "react-hot-toast";
+import { useState } from "react";
 
 const ProductCard = ({ product }) => {
   const { cart, addToCart, updateQuantity } = useCart();
@@ -34,16 +35,23 @@ const ProductCard = ({ product }) => {
         )}
       </div>
 
-      {/* Info */}
-      <div className="p-3 flex flex-col flex-1">
-        <div className="flex items-start justify-between gap-1 mb-1">
-          <h3 className="text-sm font-semibold text-white leading-tight">
-            {product.name}
-          </h3>
-          <span className="text-sm font-bold text-indigo-400 whitespace-nowrap">
-            ₹{product.price}
-          </span>
-        </div>
+        {/* Info */}
+        <div className="p-3 flex flex-col flex-1">
+          <div className="flex items-start justify-between gap-1 mb-1">
+            <h3 className="text-sm font-semibold text-white leading-tight">
+              {product.name}
+            </h3>
+            <div className="flex flex-col items-end">
+              <span className="text-sm font-black text-indigo-400 whitespace-nowrap">
+                ₹{product.price}
+              </span>
+              <div className="flex items-center gap-1 text-[10px] font-bold text-yellow-500/80 mt-1">
+                <Star size={10} fill="currentColor" />
+                <span>{product.avgRating?.toFixed(1) || "0.0"}</span>
+                <span className="text-slate-500 font-medium">({product.totalReviews || 0})</span>
+              </div>
+            </div>
+          </div>
         {product.category && (
           <span className="text-xs text-slate-500 bg-slate-800 px-2 py-0.5 rounded-full w-fit mb-2">
             {product.category}

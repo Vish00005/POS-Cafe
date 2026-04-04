@@ -6,7 +6,7 @@ import {
   AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
 } from 'recharts';
-import { TrendingUp, ShoppingBag, IndianRupee, Clock, Users, AlertCircle } from 'lucide-react';
+import { TrendingUp, ShoppingBag, IndianRupee, Clock, Users, AlertCircle, Star, Award, ThumbsDown } from 'lucide-react';
 
 const COLORS = ['#f59e0b', '#6366f1', '#22c55e', '#ec4899'];
 
@@ -26,16 +26,19 @@ const StatCard = ({ icon: Icon, label, value, sub, color = 'indigo' }) => (
 const Dashboard = () => {
   const [analytics, setAnalytics] = useState(null);
   const [recentOrders, setRecentOrders] = useState([]);
+  const [reviewStats, setReviewStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     Promise.all([
       api.get('/api/v1/order/analytics'),
       api.get('/api/v1/order?'),
+      api.get('/api/v1/review/stats'),
     ])
-      .then(([a, o]) => {
+      .then(([a, o, r]) => {
         setAnalytics(a.data);
         setRecentOrders(o.data.slice(0, 8));
+        setReviewStats(r.data);
       })
       .catch(console.error)
       .finally(() => setLoading(false));
@@ -107,8 +110,8 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Payment breakdown + recent orders */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Payment breakdown + Quality Insights */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Payment bar chart */}
           <div className="glass rounded-2xl p-5">
             <h2 className="text-sm font-semibold text-white mb-4">Payment Methods</h2>
@@ -125,30 +128,78 @@ const Dashboard = () => {
             </ResponsiveContainer>
           </div>
 
-          {/* Recent orders */}
-          <div className="lg:col-span-2 glass rounded-2xl p-5">
-            <h2 className="text-sm font-semibold text-white mb-4">Recent Orders</h2>
-            <div className="space-y-2">
-              {recentOrders.length === 0 ? (
-                <p className="text-slate-500 text-sm text-center py-8">No orders yet</p>
-              ) : recentOrders.map(o => (
-                <div key={o._id} className="flex items-center justify-between py-2 border-b border-slate-800/60 last:border-0">
-                  <div>
-                    <span className="text-sm font-mono text-indigo-400">{o.orderNumber}</span>
-                    <span className="text-xs text-slate-500 ml-2">Table {o.tableNumber}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                      o.paymentStatus === 'paid' ? 'bg-green-500/20 text-green-400' :
-                      o.paymentStatus === 'upi_pending' ? 'bg-yellow-500/20 text-yellow-400' :
-                      o.paymentStatus === 'upi_failed' ? 'bg-red-500/20 text-red-400' :
-                      'bg-slate-700 text-slate-400'
-                    }`}>{o.paymentStatus}</span>
-                    <span className="text-sm font-bold text-white">₹{o.totalAmount}</span>
-                  </div>
-                </div>
-              ))}
+          {/* Quality Insights */}
+          <div className="glass rounded-2xl p-5 flex flex-col gap-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-sm font-semibold text-white">Quality Insights (Food Ratings)</h2>
+              <Star size={16} className="text-yellow-400" fill="currentColor" />
             </div>
+            
+            <div className="grid grid-cols-2 gap-4 flex-1">
+              {/* Top Rated */}
+              <div className="space-y-2">
+                <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-1">
+                  <Award size={10} className="text-green-400" /> Top Rated
+                </div>
+                {reviewStats?.topRated?.length > 0 ? reviewStats.topRated.slice(0, 3).map(p => (
+                  <div key={p._id} className="bg-white/5 rounded-xl p-2.5 flex items-center gap-3">
+                    <img src={p.img} alt={p.name} className="w-8 h-8 rounded-lg object-cover" />
+                    <div className="min-w-0">
+                      <div className="text-xs font-bold text-white truncate">{p.name}</div>
+                      <div className="flex items-center gap-1 text-[10px] text-yellow-400 font-bold">
+                        <Star size={8} fill="currentColor" /> {p.avgRating.toFixed(1)}
+                        <span className="text-slate-500 font-normal ml-0.5">({p.totalReviews})</span>
+                      </div>
+                    </div>
+                  </div>
+                )) : <div className="text-[10px] text-slate-600 py-4 text-center border border-dashed border-slate-800 rounded-xl">No ratings yet</div>}
+              </div>
+
+              {/* Needs Improvement */}
+              <div className="space-y-2">
+                <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-1">
+                  <ThumbsDown size={10} className="text-red-400" /> Needs Work
+                </div>
+                {reviewStats?.lowRated?.length > 0 ? reviewStats.lowRated.slice(0, 3).map(p => (
+                  <div key={p._id} className="bg-white/5 rounded-xl p-2.5 flex items-center gap-3">
+                    <img src={p.img} alt={p.name} className="w-8 h-8 rounded-lg object-cover" />
+                    <div className="min-w-0">
+                      <div className="text-xs font-bold text-white truncate">{p.name}</div>
+                      <div className="flex items-center gap-1 text-[10px] text-red-400 font-bold">
+                        <Star size={8} fill="currentColor" /> {p.avgRating.toFixed(1)}
+                        <span className="text-slate-500 font-normal ml-0.5">({p.totalReviews})</span>
+                      </div>
+                    </div>
+                  </div>
+                )) : <div className="text-[10px] text-slate-600 py-4 text-center border border-dashed border-slate-800 rounded-xl">No ratings yet</div>}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Recent orders */}
+        <div className="glass rounded-2xl p-5">
+          <h2 className="text-sm font-semibold text-white mb-4">Recent Orders</h2>
+          <div className="space-y-2">
+            {recentOrders.length === 0 ? (
+              <p className="text-slate-500 text-sm text-center py-8">No orders yet</p>
+            ) : recentOrders.map(o => (
+              <div key={o._id} className="flex items-center justify-between py-2 border-b border-slate-800/60 last:border-0">
+                <div>
+                  <span className="text-sm font-mono text-indigo-400">{o.orderNumber}</span>
+                  <span className="text-xs text-slate-500 ml-2">Table {o.tableNumber}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                    o.paymentStatus === 'paid' ? 'bg-green-500/20 text-green-400' :
+                    o.paymentStatus === 'upi_pending' ? 'bg-yellow-500/20 text-yellow-400' :
+                    o.paymentStatus === 'upi_failed' ? 'bg-red-500/20 text-red-400' :
+                    'bg-slate-700 text-slate-400'
+                  }`}>{o.paymentStatus}</span>
+                  <span className="text-sm font-bold text-white">₹{o.totalAmount}</span>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>

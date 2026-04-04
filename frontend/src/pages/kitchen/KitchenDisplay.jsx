@@ -1,7 +1,15 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import api from "../../services/api";
 import Layout from "../../components/Layout";
-import { ChefHat, Clock, CheckCircle, Flame, RefreshCw } from "lucide-react";
+import {
+  ChefHat,
+  Clock,
+  CheckCircle,
+  Flame,
+  RefreshCw,
+  Bell,
+  BellOff,
+} from "lucide-react";
 import toast from "react-hot-toast";
 
 const statusConfig = {
@@ -38,25 +46,106 @@ const KitchenDisplay = () => {
   const [orders, setOrders] = useState([]);
   const [updating, setUpdating] = useState(null);
   const [lastRefresh, setLastRefresh] = useState(new Date());
-  const intervalRef = useRef(null);
+  const [newOrderId, setNewOrderId] = useState(null);
+  const [audioEnabled, setAudioEnabled] = useState(false);
+  const audioEnabledRef = useRef(false);
+  const knownOrderIds = useRef(new Set());
+  const audioRef = useRef(new Audio("/mixkit-correct-answer-reward-952.wav"));
 
-  const fetchOrders = async () => {
+  // Toggle audio and store in ref
+  const toggleAudio = () => {
+    const next = !audioEnabled;
+    setAudioEnabled(next);
+    audioEnabledRef.current = next;
+    if (next) {
+      audioRef.current.play().catch(() => {});
+      toast.success("Audio alerts enabled! 🔔");
+    }
+  };
+
+  const fetchOrders = useCallback(async () => {
     try {
-      // Only fetch paid orders — cash orders don't appear until cashier confirms payment
       const { data } = await api.get("/api/v1/order?paymentStatus=paid");
-      // Active orders first, then last 5 completed
+
+      // ── New Order Detection ──
+      let detectedOrder = null;
+      if (knownOrderIds.current.size > 0) {
+        // Find if any fetched order is NOT in our known set
+        for (const order of data) {
+          if (!knownOrderIds.current.has(order._id)) {
+            detectedOrder = order;
+            break; // Just need the first new one to trigger sound
+          }
+        }
+      }
+
+      // Sync known IDs (add all fetched IDs to the set)
+      data.forEach((o) => knownOrderIds.current.add(o._id));
+
+      // If new order found, trigger notification
+      if (detectedOrder) {
+        setNewOrderId(detectedOrder._id);
+
+        if (audioEnabledRef.current) {
+          audioRef.current.currentTime = 0;
+          audioRef.current
+            .play()
+            .catch((e) => console.log("🔇 Sound blocked:", e));
+        }
+
+        toast.custom(
+          (t) => (
+            <div
+              className={`${t.visible ? "animate-enter" : "animate-leave"} max-w-md w-full bg-slate-900 shadow-2xl rounded-2xl pointer-events-auto flex ring-1 ring-indigo-500 border border-indigo-500/50 p-4`}
+            >
+              <div className="flex-1 w-0">
+                <div className="flex items-start">
+                  <div className="shrink-0 pt-0.5">
+                    <div className="h-10 w-10 rounded-full bg-indigo-600 flex items-center justify-center">
+                      <Bell className="text-white" size={20} />
+                    </div>
+                  </div>
+                  <div className="ml-3 flex-1">
+                    <p className="text-sm font-bold text-white">
+                      New Order #{detectedOrder.orderNumber}
+                    </p>
+                    <p className="mt-1 text-xs text-slate-400">
+                      Table {detectedOrder.tableNumber} just placed an order!
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="ml-4 shrink-0 flex">
+                <button
+                  onClick={() => toast.dismiss(t.id)}
+                  className="px-3 py-1 text-xs font-bold text-indigo-400"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          ),
+          { duration: 8000 },
+        );
+
+        setTimeout(() => setNewOrderId(null), 15000);
+      }
+
       const active = data.filter((o) => o.status !== "completed");
       const done = data.filter((o) => o.status === "completed").slice(0, 5);
       setOrders([...active, ...done]);
       setLastRefresh(new Date());
-    } catch (_) {}
-  };
+    } catch (err) {
+      console.error("❌ Fetch failed:", err);
+    }
+  }, []);
 
+  // Polling setup (3 seconds)
   useEffect(() => {
     fetchOrders();
-    intervalRef.current = setInterval(fetchOrders, 3000);
-    return () => clearInterval(intervalRef.current);
-  }, []);
+    const iv = setInterval(fetchOrders, 3000);
+    return () => clearInterval(iv);
+  }, [fetchOrders]);
 
   const updateStatus = async (orderId, status) => {
     setUpdating(orderId);
@@ -87,28 +176,51 @@ const KitchenDisplay = () => {
         {/* KDS Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-orange-600 rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center">
               <ChefHat size={20} className="text-white" />
             </div>
             <div>
               <h1 className="text-xl font-bold text-white">Kitchen Display</h1>
               <p className="text-slate-400 text-xs">
                 {activeCount} active order{activeCount !== 1 ? "s" : ""} ·
-                Auto-refresh every 3s
+                Real-time alerts
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2 text-xs text-slate-500">
-            <RefreshCw
-              size={12}
-              className="animate-spin"
-              style={{ animationDuration: "3s" }}
-            />
-            {lastRefresh.toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-              second: "2-digit",
-            })}
+
+          <div className="flex items-center gap-4">
+            {/* Audio Toggle */}
+            <button
+              onClick={toggleAudio}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border-2 transition-all ${
+                audioEnabled
+                  ? "bg-indigo-600/20 border-indigo-600 text-indigo-400"
+                  : "bg-slate-800 border-slate-700 text-slate-500"
+              }`}
+              title={audioEnabled ? "Disable Sound" : "Enable Sound"}
+            >
+              {audioEnabled ? (
+                <Bell size={16} className="animate-pulse" />
+              ) : (
+                <BellOff size={16} />
+              )}
+              <span className="text-xs font-bold hidden sm:inline">
+                {audioEnabled ? "ALERTS ON" : "ALERTS OFF"}
+              </span>
+            </button>
+
+            <div className="flex items-center gap-2 text-xs text-slate-500">
+              <RefreshCw
+                size={12}
+                className="animate-spin text-slate-600"
+                style={{ animationDuration: "30s" }}
+              />
+              {lastRefresh.toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+              })}
+            </div>
           </div>
         </div>
 

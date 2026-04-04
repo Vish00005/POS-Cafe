@@ -45,6 +45,9 @@ const orderSchema = new mongoose.Schema(
     },
 
     totalAmount: Number,
+    reviewedAt: {
+      type: Date,
+    },
   },
   { timestamps: true },
 );

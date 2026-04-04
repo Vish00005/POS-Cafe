@@ -3,7 +3,8 @@ import api from '../../services/api';
 import Layout from '../../components/Layout';
 import Spinner from '../../components/Spinner';
 import { useAuth } from '../../context/AuthContext';
-import { ShoppingBag, Clock, ChefHat, CheckCircle, Banknote, Smartphone, CreditCard, RefreshCw, AlertCircle } from 'lucide-react';
+import { ShoppingBag, Clock, ChefHat, CheckCircle, Banknote, Smartphone, CreditCard, RefreshCw, AlertCircle, Star } from 'lucide-react';
+import RatingModal from '../../components/RatingModal';
 
 const statusConfig = {
   pending: {
@@ -70,6 +71,7 @@ const MyOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
+  const [ratingOrder, setRatingOrder] = useState(null);
 
   const fetchOrders = () => {
     setLoading(true);
@@ -228,11 +230,31 @@ const MyOrders = () => {
 
                     {/* Progress tracker */}
                     <ProgressBar status={order.status} />
+
+                    {/* Rate Order Button */}
+                    {order.status === 'completed' && !order.reviewedAt && (
+                      <button
+                        onClick={() => setRatingOrder(order)}
+                        className="w-full flex items-center justify-center gap-2 bg-indigo-600/10 hover:bg-indigo-600 text-indigo-400 hover:text-white py-2.5 rounded-xl text-xs font-bold transition-all border border-indigo-500/20 active:scale-95 mt-4"
+                      >
+                        <Star size={14} fill="currentColor" />
+                        RATE YOUR ORDER
+                      </button>
+                    )}
                   </div>
                 </div>
               );
             })}
           </div>
+        )}
+
+        {/* Rating Modal */}
+        {ratingOrder && (
+          <RatingModal
+            order={ratingOrder}
+            onClose={() => setRatingOrder(null)}
+            onSuccess={fetchOrders}
+          />
         )}
 
         {/* Auto-refresh notice */}

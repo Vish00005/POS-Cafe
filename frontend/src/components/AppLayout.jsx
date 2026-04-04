@@ -61,58 +61,33 @@ const AppLayout = ({ children }) => {
   const closeMobile = () => setIsMobileOpen(false);
 
   return (
-    <div className="flex h-screen bg-slate-950 text-white overflow-hidden">
-      {/* ── Mobile Overlay ── */}
-      {isMobileOpen && (
+    <div className="flex flex-col h-screen bg-slate-950 text-white overflow-hidden font-sans">
+      {/* ── Top Navbar (Desktop) ── */}
+      <header className="hidden lg:flex fixed top-0 left-0 right-0 h-20 items-center justify-between px-8 bg-slate-900/60 backdrop-blur-2xl border-b border-white/5 z-50">
+        {/* Left: Logo */}
         <div
-          className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-40 lg:hidden"
-          onClick={closeMobile}
-        />
-      )}
-
-      {/* ── Sidebar (Desktop: Fixed Rail | Mobile: Drawer) ── */}
-      <aside
-        className={`
-          fixed inset-y-0 left-0 z-50 flex flex-col bg-slate-900 border-r border-slate-800 transition-all duration-300
-          lg:relative lg:translate-x-0 lg:opacity-100 lg:visible
-          ${isMobileOpen ? "translate-x-0 visible opacity-100 w-64 shadow-2xl" : "-translate-x-full invisible opacity-0 lg:w-auto lg:visible lg:opacity-100"}
-          ${!isMobileOpen ? "w-0 lg:w-auto" : ""}
-          ${expanded ? "lg:w-64" : "lg:w-16"}
-        `}
-      >
-        {/* Logo + toggle (Desktop only: lg only) */}
-        <div className="hidden lg:flex items-center h-16 px-3 border-b border-slate-800 gap-3 overflow-hidden">
-          <button
-            onClick={() => setExpanded(!expanded)}
-            className="w-10 h-10 shrink-0 flex items-center justify-center rounded-xl bg-indigo-600 text-white hover:bg-indigo-500 transition-all"
-          >
-            {expanded ? <X size={16} /> : <MenuIcon size={16} />}
-          </button>
-          {expanded && (
-            <span className="text-sm font-bold text-white whitespace-nowrap">
-              ☕ Smart Cafeteria
+          className="flex items-center gap-3 group cursor-pointer shrink-0"
+          onClick={() => navigate("/")}
+        >
+          <div className="w-11 h-11 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20 group-hover:rotate-12 transition-transform">
+            <Coffee size={22} className="text-white" />
+          </div>
+          <div className="flex flex-col">
+            <span className="text-base font-black text-white tracking-widest leading-none">
+              SMART POS
             </span>
-          )}
+            <span className="text-[10px] text-indigo-400 font-bold tracking-[0.2em] uppercase">
+              Cafeteria
+            </span>
+          </div>
         </div>
 
-        {/* Logo + Close (Mobile only: below lg) */}
-        <div className="flex lg:hidden items-center h-16 px-4 border-b border-slate-800 justify-between shrink-0">
-          <span className="text-sm font-bold text-white">☕ Smart Cafeteria</span>
-          <button 
-            onClick={closeMobile} 
-            className="p-2 -mr-2 text-slate-400 hover:text-white transition-colors"
-          >
-            <X size={20} />
-          </button>
-        </div>
-
-        {/* Nav items */}
-        <nav className="flex-1 py-3 space-y-1 px-2 overflow-y-auto overflow-x-hidden">
+        {/* Center: Navigation Links */}
+        <nav className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2  p-1.5  border-white/10 shadow-2xl">
           {navItems.map(({ to, icon: Icon, label }) => (
             <NavLink
               key={to}
               to={to}
-              onClick={closeMobile}
               end={
                 to === "/admin" ||
                 to === "/pos" ||
@@ -120,65 +95,95 @@ const AppLayout = ({ children }) => {
                 to === "/menu"
               }
               className={({ isActive }) =>
-                `flex items-center gap-3 px-2.5 py-3 rounded-xl transition-all group overflow-hidden whitespace-nowrap ${
+                `flex items-center gap-2.5 px-6 py-3 rounded-xl text-xs font-black transition-all duration-300 ${
                   isActive
-                    ? "bg-indigo-600 text-white shadow-lg shadow-indigo-500/20"
-                    : "text-slate-400 hover:bg-slate-800 hover:text-white"
+                    ? "bg-indigo-600 text-white shadow-lg shadow-indigo-500/20 scale-105"
+                    : "text-slate-400 hover:text-white hover:bg-white/10"
                 }`
               }
             >
-              <Icon size={18} className="shrink-0" />
-              {(expanded || isMobileOpen) && (
-                <span className="text-sm font-medium">{label}</span>
-              )}
+              <Icon size={16} strokeWidth={2.5} />
+              <span className="uppercase tracking-tight">{label}</span>
             </NavLink>
           ))}
         </nav>
 
-        {/* User + logout */}
-        <div className="border-t border-slate-800 p-2 space-y-1 overflow-hidden">
-          {(expanded || isMobileOpen) && (
-            <div className="px-3 py-2">
-              <div className="text-xs font-semibold text-white truncate">
-                {user?.name}
-              </div>
-              <div className="text-xs text-slate-500 capitalize">
-                {user?.role}
-              </div>
-            </div>
-          )}
+        {/* Right: User Section */}
+        <div className="flex items-center gap-5 shrink-0">
+          <div className="flex flex-col items-end mr-1">
+            <span className="text-sm font-black text-white leading-none">
+              {user?.name}
+            </span>
+            <span className="text-[10px] text-indigo-400 font-black uppercase tracking-widest mt-1">
+              {user?.role}
+            </span>
+          </div>
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-2.5 py-3 rounded-xl text-slate-400 hover:bg-red-500/10 hover:text-red-400 transition-all overflow-hidden whitespace-nowrap"
+            className="w-11 h-11 flex items-center justify-center bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white rounded-xl transition-all shadow-lg hover:shadow-red-500/20 active:scale-90"
+            title="Logout"
           >
-            <LogOut size={18} className="shrink-0" />
-            {(expanded || isMobileOpen) && (
-              <span className="text-sm font-medium">Logout</span>
-            )}
+            <LogOut size={20} />
           </button>
         </div>
-      </aside>
+      </header>
+
+      {/* ── Top Bar (Mobile) ── */}
+      <header className="lg:hidden flex items-center justify-between h-16 px-5 bg-slate-900/80 backdrop-blur-lg border-b border-white/5 sticky top-0 z-50">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 bg-indigo-600 rounded-lg flex items-center justify-center text-sm shadow-lg shadow-indigo-500/20">
+            ☕
+          </div>
+          <span className="text-base font-black tracking-tighter text-white uppercase">
+            SMART POS
+          </span>
+        </div>
+        <button
+          onClick={handleLogout}
+          className="p-2.5 bg-slate-800 rounded-xl text-slate-400 hover:text-red-400 transition-all"
+        >
+          <LogOut size={20} />
+        </button>
+      </header>
 
       {/* ── Main Content Area ── */}
-      <div className="flex-1 flex flex-col min-w-0">
-        {/* ── Mobile Top Bar ── */}
-        <header className="lg:hidden flex items-center justify-between h-14 px-4 bg-slate-900 border-b border-slate-800 shrink-0 z-30">
-          <button
-            onClick={() => setIsMobileOpen(true)}
-            className="p-2 -ml-2 text-slate-400 hover:text-white"
-          >
-            <MenuIcon size={20} />
-          </button>
-          <span className="text-sm font-bold text-white">Smart Cafeteria</span>
-          <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-[10px] font-bold">
-            {user?.name?.charAt(0) || "U"}
-          </div>
-        </header>
-
-        <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 overflow-y-auto w-full lg:pt-20 pb-20 lg:pb-0">
+        <div className="max-w-(--breakpoint-2xl) mx-auto w-full min-h-full">
           {children}
-        </main>
-      </div>
+        </div>
+      </main>
+
+      {/* ── Bottom Navbar (Mobile Only) ── */}
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 h-16 bg-slate-900/80 backdrop-blur-2xl border-t border-white/10 flex items-center justify-around px-2 z-50">
+        {navItems.slice(0, 5).map(({ to, icon: Icon, label }) => (
+          <NavLink
+            key={to}
+            to={to}
+            end={
+              to === "/admin" ||
+              to === "/pos" ||
+              to === "/kitchen" ||
+              to === "/menu"
+            }
+            className={({ isActive }) =>
+              `flex flex-col items-center justify-center gap-1 w-16 h-full transition-all duration-300 ${
+                isActive ? "text-indigo-400" : "text-slate-500"
+              }`
+            }
+          >
+            <div
+              className={`p-2 rounded-xl transition-all ${
+                location.pathname === to ? "bg-indigo-600/10 scale-110" : ""
+              }`}
+            >
+              <Icon size={20} />
+            </div>
+            <span className="text-[10px] font-bold uppercase tracking-tighter truncate w-full text-center">
+              {label.split(" ")[0]}
+            </span>
+          </NavLink>
+        ))}
+      </nav>
     </div>
   );
 };
