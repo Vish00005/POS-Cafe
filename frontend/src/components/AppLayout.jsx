@@ -1,35 +1,48 @@
-import { useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import {
-  LayoutDashboard, ShoppingBag, Coffee, Table2, Users, BarChart3,
-  Settings, ClipboardList, ChefHat, UtensilsCrossed, ShoppingCart,
-  ListOrdered, LogOut, ChevronRight, Banknote, Smartphone, Menu as MenuIcon, X,
-} from 'lucide-react';
+  LayoutDashboard,
+  ShoppingBag,
+  Coffee,
+  Table2,
+  Users,
+  BarChart3,
+  Settings,
+  ClipboardList,
+  ChefHat,
+  UtensilsCrossed,
+  ShoppingCart,
+  ListOrdered,
+  LogOut,
+  ChevronRight,
+  Banknote,
+  Smartphone,
+  Menu as MenuIcon,
+  X,
+} from "lucide-react";
 
 const roleNav = {
   admin: [
-    { to: '/admin',           icon: LayoutDashboard, label: 'Dashboard' },
-    { to: '/admin/orders',    icon: ShoppingBag,     label: 'Orders' },
-    { to: '/admin/products',  icon: Coffee,          label: 'Menu / Products' },
-    { to: '/admin/tables',    icon: Table2,          label: 'Tables' },
-    { to: '/admin/staff',     icon: Users,           label: 'Staff' },
-    { to: '/admin/analytics', icon: BarChart3,       label: 'Analytics' },
-    { to: '/admin/settings',  icon: Settings,        label: 'Settings' },
+    { to: "/admin", icon: LayoutDashboard, label: "Dashboard" },
+    { to: "/admin/orders", icon: ShoppingBag, label: "Orders" },
+    { to: "/admin/products", icon: Coffee, label: "Menu / Products" },
+    { to: "/admin/tables", icon: Table2, label: "Tables" },
+    { to: "/admin/staff", icon: Users, label: "Staff" },
+    { to: "/admin/analytics", icon: BarChart3, label: "Analytics" },
+    { to: "/admin/settings", icon: Settings, label: "Settings" },
   ],
   cashier: [
-    { to: '/pos',        icon: Table2,        label: 'Floor View' },
-    { to: '/pos/order',  icon: ClipboardList, label: 'New Order' },
-    { to: '/pos/cash',   icon: Banknote,      label: 'Cash Payments' },
-    { to: '/pos/upi',    icon: Smartphone,    label: 'UPI Confirm' },
+    { to: "/pos", icon: Table2, label: "Floor View" },
+    { to: "/pos/order", icon: ClipboardList, label: "New Order" },
+    { to: "/pos/cash", icon: Banknote, label: "Cash Payments" },
+    { to: "/pos/upi", icon: Smartphone, label: "UPI Confirm" },
   ],
-  kitchen: [
-    { to: '/kitchen', icon: ChefHat, label: 'Kitchen Display' },
-  ],
+  kitchen: [{ to: "/kitchen", icon: ChefHat, label: "Kitchen Display" }],
   customer: [
-    { to: '/menu',          icon: UtensilsCrossed, label: 'Menu' },
-    { to: '/menu/cart',     icon: ShoppingCart,    label: 'Cart' },
-    { to: '/menu/orders',   icon: ListOrdered,     label: 'My Orders' },
+    { to: "/menu", icon: UtensilsCrossed, label: "Menu" },
+    { to: "/menu/cart", icon: ShoppingCart, label: "Cart" },
+    { to: "/menu/orders", icon: ListOrdered, label: "My Orders" },
   ],
 };
 
@@ -39,13 +52,16 @@ const AppLayout = ({ children }) => {
   const [expanded, setExpanded] = useState(false);
   const navItems = roleNav[user?.role] || [];
 
-  const handleLogout = () => { logout(); navigate('/login'); };
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   return (
     <div className="flex h-screen bg-slate-950 text-white overflow-hidden">
       {/* ── Left Icon Rail ── */}
       <aside
-        className={`flex-shrink-0 flex flex-col bg-slate-900 border-r border-slate-800 transition-all duration-300 z-40 ${expanded ? 'w-56' : 'w-16'}`}
+        className={`shrink-0 flex flex-col bg-slate-900 border-r border-slate-800 transition-all duration-300 z-40 ${expanded ? "w-56" : "w-16"}`}
       >
         {/* Logo + toggle */}
         <div className="flex items-center h-16 px-3 border-b border-slate-800 gap-3 overflow-hidden">
@@ -68,12 +84,17 @@ const AppLayout = ({ children }) => {
             <NavLink
               key={to}
               to={to}
-              end={to === '/admin' || to === '/pos' || to === '/kitchen' || to === '/menu'}
+              end={
+                to === "/admin" ||
+                to === "/pos" ||
+                to === "/kitchen" ||
+                to === "/menu"
+              }
               className={({ isActive }) =>
                 `flex items-center gap-3 px-2 py-2.5 rounded-xl transition-all group overflow-hidden whitespace-nowrap ${
                   isActive
-                    ? 'bg-indigo-600 text-white'
-                    : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                    ? "bg-indigo-600 text-white"
+                    : "text-slate-400 hover:bg-slate-800 hover:text-white"
                 }`
               }
             >
@@ -87,8 +108,12 @@ const AppLayout = ({ children }) => {
         <div className="border-t border-slate-800 p-2 space-y-1 overflow-hidden">
           {expanded && (
             <div className="px-2 py-1.5">
-              <div className="text-xs font-semibold text-white truncate">{user?.name}</div>
-              <div className="text-xs text-slate-500 capitalize">{user?.role}</div>
+              <div className="text-xs font-semibold text-white truncate">
+                {user?.name}
+              </div>
+              <div className="text-xs text-slate-500 capitalize">
+                {user?.role}
+              </div>
             </div>
           )}
           <button
@@ -102,9 +127,7 @@ const AppLayout = ({ children }) => {
       </aside>
 
       {/* ── Main Content ── */}
-      <main className="flex-1 overflow-y-auto min-w-0">
-        {children}
-      </main>
+      <main className="flex-1 overflow-y-auto min-w-0">{children}</main>
     </div>
   );
 };
