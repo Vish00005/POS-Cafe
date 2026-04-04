@@ -318,7 +318,6 @@ const Checkout = () => {
           email: email || user?.email || "customer@cafe.com",
         },
         theme: { color: "#6366f1" },
-        method: { upi: false, card: true, netbanking: false, wallet: false },
 
         handler: async () => {
           try {
