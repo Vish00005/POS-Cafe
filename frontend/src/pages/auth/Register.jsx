@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
-import { Loader2 } from 'lucide-react';
+import { Loader2, ArrowLeft, Coffee, UserPlus } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const roleRedirects = {
@@ -28,59 +28,83 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#0f172a] bg-grid text-slate-100 flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Dynamic Background Elements */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 right-1/4 w-80 h-80 bg-purple-600/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 left-1/4 w-80 h-80 bg-indigo-600/20 rounded-full blur-3xl" />
+        <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-600/10 rounded-full blur-[120px] animate-blob" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-600/10 rounded-full blur-[120px] animate-blob delay-500" />
       </div>
 
-      <div className="relative w-full max-w-md">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-linear-to-br from-purple-500 to-indigo-600 rounded-2xl shadow-xl mb-4 text-3xl">
-            ☕
+      {/* Back Button */}
+      <Link 
+        to="/" 
+        className="absolute top-8 left-8 flex items-center gap-2 text-slate-400 hover:text-white transition-all group z-50 px-4 py-2 rounded-full glass hover:bg-white/5 active:scale-95"
+      >
+        <ArrowLeft size={18} className="group-hover:-translate-x-1" />
+        <span className="text-sm font-medium">Back to Home</span>
+      </Link>
+
+      <div className="relative w-full max-w-md z-10">
+        {/* Header Section */}
+        <div className="text-center mb-10 animate-reveal">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-purple-500/10 rounded-3xl border border-purple-500/20 shadow-2xl mb-6 group hover:scale-110">
+            <UserPlus size={40} className="text-purple-400 group-hover:rotate-6" />
           </div>
-          <h1 className="text-3xl font-bold text-white">Create Account</h1>
-          <p className="text-slate-400 mt-1 uppercase tracking-widest font-bold">Odoo Cafeteria</p>
+          <h1 className="text-4xl font-black tracking-tighter mb-2">
+            JOIN <span className="gradient-text">ODOO</span>
+          </h1>
+          <p className="text-slate-400 font-medium tracking-widest text-xs uppercase opacity-80">Initialize your operative profile</p>
         </div>
 
-        <div className="glass rounded-2xl p-8 shadow-2xl">
-          <form onSubmit={handleSubmit} className="space-y-5">
-            {[
-              { label: 'Full Name', key: 'name', type: 'text', placeholder: 'John Doe' },
-              { label: 'Email', key: 'email', type: 'email', placeholder: 'you@example.com' },
-              { label: 'Password', key: 'password', type: 'password', placeholder: '••••••••' },
-            ].map(({ label, key, type, placeholder }) => (
-              <div key={key}>
-                <label className="block text-sm font-medium text-slate-300 mb-1.5">{label}</label>
-                <input
-                  type={type}
-                  required
-                  value={form[key]}
-                  onChange={(e) => setForm({ ...form, [key]: e.target.value })}
-                  placeholder={placeholder}
-                  className="w-full bg-slate-800 border border-slate-700 text-white placeholder-slate-500 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                />
-              </div>
-            ))}
-
-
+        {/* Register Card */}
+        <div className="glass rounded-[2.5rem] p-8 md:p-10 shadow-3xl border-white/5 animate-fade-up">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-4">
+              {[
+                { label: 'Full Identity', key: 'name', type: 'text', placeholder: 'Agent Name' },
+                { label: 'System Email', key: 'email', type: 'email', placeholder: 'operative@hq.com' },
+                { label: 'Security Token', key: 'password', type: 'password', placeholder: '••••••••' },
+              ].map(({ label, key, type, placeholder }, idx) => (
+                <div key={key} className={`space-y-2 animate-fade-up`} style={{ animationDelay: `${(idx + 1) * 100}ms` }}>
+                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">
+                    {label}
+                  </label>
+                  <input
+                    type={type}
+                    required
+                    value={form[key]}
+                    onChange={(e) => setForm({ ...form, [key]: e.target.value })}
+                    placeholder={placeholder}
+                    className="w-full bg-slate-900/50 border border-slate-700/50 text-white placeholder-slate-500 rounded-2xl px-6 py-4 text-sm input-focus"
+                  />
+                </div>
+              ))}
+            </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-semibold py-3 rounded-xl transition-all shadow-lg shadow-indigo-500/20"
+              className="w-full mt-4 relative group overflow-hidden bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-bold py-4 rounded-2xl transition-all shadow-xl shadow-indigo-500/20 active:scale-[0.98]"
             >
-              {loading && <Loader2 size={18} className="animate-spin" />}
-              {loading ? 'Creating...' : 'Create Account'}
+              <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+              <span className="relative flex items-center justify-center gap-2 uppercase tracking-widest text-sm">
+                {loading && <Loader2 size={18} className="animate-spin" />}
+                {loading ? 'Processing...' : 'Deploy Profile'}
+              </span>
             </button>
           </form>
 
-          <p className="text-center text-slate-500 text-sm mt-5">
-            Already have an account?{' '}
-            <Link to="/login" className="text-indigo-400 hover:text-indigo-300 font-medium">
-              Sign in
-            </Link>
-          </p>
+          <div className="mt-10 text-center">
+            <p className="text-slate-500 text-xs font-medium">
+              Already authorized?{" "}
+              <Link
+                to="/login"
+                className="text-indigo-400 hover:text-indigo-300 font-bold hover:underline underline-offset-8 transition-all"
+              >
+                Access Portal
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
     </div>
