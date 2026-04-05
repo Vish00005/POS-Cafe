@@ -117,7 +117,7 @@ const Login = () => {
               disabled={loading}
               className="w-full relative group overflow-hidden bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-bold py-4 rounded-2xl transition-all shadow-xl shadow-indigo-500/20 active:scale-[0.98]"
             >
-              <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+              <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
               <span className="relative flex items-center justify-center gap-2 uppercase tracking-widest text-sm">
                 {loading ? <Loader2 size={18} className="animate-spin" /> : null}
                 {loading ? "Decrypting..." : "Authorized Entry"}

@@ -12,12 +12,39 @@ const roleRedirects = {
 };
 
 const Register = () => {
-  const [form, setForm] = useState({ name: '', email: '', password: '' });
+  const [form, setForm] = useState({ name: '', email: '', password: '', confirmPassword: '' });
   const { register, loading } = useAuth();
   const navigate = useNavigate();
 
+  const validatePassword = (pass) => {
+    const hasUpper = /[A-Z]/.test(pass);
+    const hasLower = /[a-z]/.test(pass);
+    const hasNumber = /[0-9]/.test(pass);
+    const hasSpecial = /[@$!%*?&]/.test(pass);
+    const isLongEnough = pass.length >= 8;
+
+    if (!isLongEnough) return "Password must be at least 8 characters long";
+    if (!hasUpper) return "Password must contain at least one uppercase letter";
+    if (!hasLower) return "Password must contain at least one lowercase letter";
+    if (!hasNumber) return "Password must contain at least one number";
+    if (!hasSpecial) return "Password must contain at least one special character (@$!%*?&)";
+    return null;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const passwordError = validatePassword(form.password);
+    if (passwordError) {
+      toast.error(passwordError);
+      return;
+    }
+
+    if (form.password !== form.confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
     const result = await register(form.name, form.email, form.password);
     if (result.success) {
       toast.success('Account created!');
@@ -64,6 +91,7 @@ const Register = () => {
                 { label: 'Full Identity', key: 'name', type: 'text', placeholder: 'Agent Name' },
                 { label: 'System Email', key: 'email', type: 'email', placeholder: 'operative@hq.com' },
                 { label: 'Security Token', key: 'password', type: 'password', placeholder: '••••••••' },
+                { label: 'Confirm Token', key: 'confirmPassword', type: 'password', placeholder: '••••••••' },
               ].map(({ label, key, type, placeholder }, idx) => (
                 <div key={key} className={`space-y-2 animate-fade-up`} style={{ animationDelay: `${(idx + 1) * 100}ms` }}>
                   <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">
@@ -86,7 +114,7 @@ const Register = () => {
               disabled={loading}
               className="w-full mt-4 relative group overflow-hidden bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-bold py-4 rounded-2xl transition-all shadow-xl shadow-indigo-500/20 active:scale-[0.98]"
             >
-              <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+              <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
               <span className="relative flex items-center justify-center gap-2 uppercase tracking-widest text-sm">
                 {loading && <Loader2 size={18} className="animate-spin" />}
                 {loading ? 'Processing...' : 'Deploy Profile'}
