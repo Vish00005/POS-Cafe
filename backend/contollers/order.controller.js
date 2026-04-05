@@ -142,13 +142,28 @@ export const getAnalytics = async (req, res) => {
       return d.toISOString().slice(0, 10);
     });
 
-    const revenueByDay = days.map((day) => ({
-      day: new Date(day).toLocaleDateString("en-IN", { weekday: "short" }),
-      revenue: orders
-        .filter(o => o.createdAt.toISOString().slice(0, 10) === day && o.paymentStatus === "paid")
-        .reduce((s, o) => s + o.totalAmount, 0),
-      orders: orders.filter(o => o.createdAt.toISOString().slice(0, 10) === day).length,
-    }));
+    const revenueByDay = days.map((day) => {
+      const dayLabel = new Date(day).toLocaleDateString("en-IN", { weekday: "short" });
+      
+      const dayOrders = orders.filter(o => {
+        if (!o.createdAt) return false;
+        try {
+          return o.createdAt.toISOString().slice(0, 10) === day;
+        } catch (e) {
+          return false;
+        }
+      });
+
+      const revenue = dayOrders
+        .filter(o => o.paymentStatus === "paid")
+        .reduce((s, o) => s + (Number(o.totalAmount) || 0), 0);
+
+      return {
+        day: dayLabel,
+        revenue,
+        orders: dayOrders.length,
+      };
+    });
 
     const statusBreakdown = [
       { name: "Pending",   value: orders.filter(o => o.status === "pending").length,   fill: "#f59e0b" },
@@ -162,10 +177,19 @@ export const getAnalytics = async (req, res) => {
       { name: "Card",      value: orders.filter(o => o.paymentMethod === "card").length },
     ];
 
-    const totalRevenue = orders.filter(o => o.paymentStatus === "paid").reduce((s, o) => s + o.totalAmount, 0);
+    const totalRevenue = orders
+      .filter(o => o.paymentStatus === "paid")
+      .reduce((s, o) => s + (Number(o.totalAmount) || 0), 0);
 
-    res.json({ revenueByDay, statusBreakdown, paymentBreakdown, totalOrders: orders.length, totalRevenue });
+    res.json({ 
+      revenueByDay, 
+      statusBreakdown, 
+      paymentBreakdown, 
+      totalOrders: orders.length, 
+      totalRevenue 
+    });
   } catch (error) {
+    console.error("Analytics Error:", error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -176,10 +200,11 @@ export const getOrderSummary = async (req, res) => {
     const totalOrders = orders.length;
     const totalRevenue = orders
       .filter(o => o.paymentStatus === "paid")
-      .reduce((acc, o) => acc + o.totalAmount, 0);
+      .reduce((acc, o) => acc + (Number(o.totalAmount) || 0), 0);
     const pendingPayments = orders.filter(o => o.paymentStatus === "pending").length;
     res.json({ totalOrders, totalRevenue, pendingPayments });
   } catch (error) {
+    console.error("Order Summary Error:", error);
     res.status(500).json({ message: error.message });
   }
 };

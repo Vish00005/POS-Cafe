@@ -8,14 +8,18 @@ export const sendOrderReceipt = async (order) => {
   const FROM_NAME = process.env.FROM_NAME || "Odoo Cafeteria";
 
   if (!BREVO_API_KEY) {
-    console.error(`❌ [Order ${order.orderNumber}] Brevo API Key missing. Receipt not sent.`);
+    console.error(
+      `❌ [Order ${order.orderNumber}] Brevo API Key missing. Receipt not sent.`,
+    );
     return;
   }
 
   const recipientEmail =
     order.email || (order.customer && order.customer.email);
 
-  console.log(`[Order ${order.orderNumber}] Preparing to send receipt to: ${recipientEmail || "None found"}`);
+  console.log(
+    `[Order ${order.orderNumber}] Preparing to send receipt to: ${recipientEmail || "None found"}`,
+  );
 
   if (!recipientEmail) {
     console.log("ℹ️ No recipient email found for order", order.orderNumber);
@@ -58,7 +62,7 @@ export const sendOrderReceipt = async (order) => {
           <div style="font-size: 24px; font-weight: 800; letter-spacing: -0.025em; margin-bottom: 8px;">ODOO CAFETERIA</div>
           <div style="font-size: 14px; opacity: 0.9;">Premium Dining Experience</div>
         </div>
-        <div class="content">
+        <div class="content" style="margin: 20px 0>
           <div style="text-align: center; margin-bottom: 32px;">
             <div class="badge badge-paid">Payment Received</div>
             <h2 style="margin: 0; color: #0f172a; font-size: 20px;">Order Receipt</h2>
