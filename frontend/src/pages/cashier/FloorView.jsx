@@ -81,7 +81,7 @@ const FloorView = () => {
               onClick={() => navigate('/pos/order')}
               className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2.5 rounded-xl text-sm font-medium transition-all shadow-lg shadow-indigo-500/20"
             >
-              <Plus size={16} /> New Order
+              <Plus size={16} /> Parcel
             </button>
           </div>
         </div>

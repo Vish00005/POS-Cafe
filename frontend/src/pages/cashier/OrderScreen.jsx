@@ -18,7 +18,8 @@ import { useAuth } from "../../context/AuthContext";
 
 const OrderScreen = () => {
   const [searchParams] = useSearchParams();
-  const tableNumber = searchParams.get("table") || 1;
+  const tableParam = searchParams.get("table");
+  const tableNumber = tableParam ? parseInt(tableParam) : 0; // 0 represents Parcel
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -77,7 +78,7 @@ const OrderScreen = () => {
         quantity: i.quantity,
       }));
       const { data } = await api.post("/api/v1/order", {
-        tableNumber: parseInt(tableNumber),
+        tableNumber,
         items,
         paymentMethod: "cash",
         customer: user._id,
@@ -107,7 +108,7 @@ const OrderScreen = () => {
             </button>
             <div>
               <h1 className="text-lg font-bold text-white">
-                New Order — Table {tableNumber}
+                {tableNumber > 0 ? `Table Order — Table ${tableNumber}` : "Parcel Order"}
               </h1>
               <p className="text-xs text-slate-400">
                 Select items to add to order

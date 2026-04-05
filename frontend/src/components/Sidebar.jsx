@@ -11,7 +11,7 @@ const navLinks = {
   ],
   cashier: [
     { to: '/pos', label: 'Floor View', icon: Table2 },
-    { to: '/pos/order', label: 'New Order', icon: ShoppingBag },
+    { to: '/pos/order', label: 'Parcel', icon: ShoppingBag },
     { to: '/pos/cash', label: 'Cash Payments', icon: Banknote },
   ],
   kitchen: [

@@ -275,7 +275,7 @@ const importData = async () => {
 
     // ── Settings (UPI placeholder) ──────────────────────────────────────────
     await Settings.create({
-      upiId: "cafeteria@upi",
+      upiId: "vishal.j.khim@okhdfcbank",
       upiName: "Smart Cafeteria",
       cafeName: "Smart Cafeteria",
       currency: "INR",
@@ -287,87 +287,87 @@ const importData = async () => {
     const customer2 = users[4];
     const customer3 = users[5];
 
-    const orderSeeds = [
-      // Cash orders
-      {
-        customer: customer1._id,
-        table: tables[0],
-        items: [products[0], products[11]],
-        qty: [2, 1],
-        method: "cash",
-        payStatus: "pending",
-      },
-      {
-        customer: customer2._id,
-        table: tables[1],
-        items: [products[12], products[6]],
-        qty: [1, 2],
-        method: "cash",
-        payStatus: "paid",
-      },
-      // UPI orders
-      {
-        customer: customer1._id,
-        table: tables[2],
-        items: [products[2], products[9]],
-        qty: [1, 1],
-        method: "upi",
-        payStatus: "paid",
-      },
-      {
-        customer: customer3._id,
-        table: tables[3],
-        items: [products[16]],
-        qty: [2],
-        method: "upi",
-        payStatus: "upi_pending",
-      },
-      // Card orders
-      {
-        customer: customer2._id,
-        table: tables[4],
-        items: [products[13], products[7]],
-        qty: [1, 1],
-        method: "card",
-        payStatus: "paid",
-      },
-      {
-        customer: customer3._id,
-        table: tables[5],
-        items: [products[4], products[8]],
-        qty: [1, 2],
-        method: "card",
-        payStatus: "paid",
-      },
-    ];
+    // const orderSeeds = [
+    //   // Cash orders
+    //   {
+    //     customer: customer1._id,
+    //     table: tables[0],
+    //     items: [products[0], products[11]],
+    //     qty: [2, 1],
+    //     method: "cash",
+    //     payStatus: "pending",
+    //   },
+    //   {
+    //     customer: customer2._id,
+    //     table: tables[1],
+    //     items: [products[12], products[6]],
+    //     qty: [1, 2],
+    //     method: "cash",
+    //     payStatus: "paid",
+    //   },
+    //   // UPI orders
+    //   {
+    //     customer: customer1._id,
+    //     table: tables[2],
+    //     items: [products[2], products[9]],
+    //     qty: [1, 1],
+    //     method: "upi",
+    //     payStatus: "paid",
+    //   },
+    //   {
+    //     customer: customer3._id,
+    //     table: tables[3],
+    //     items: [products[16]],
+    //     qty: [2],
+    //     method: "upi",
+    //     payStatus: "upi_pending",
+    //   },
+    //   // Card orders
+    //   {
+    //     customer: customer2._id,
+    //     table: tables[4],
+    //     items: [products[13], products[7]],
+    //     qty: [1, 1],
+    //     method: "card",
+    //     payStatus: "paid",
+    //   },
+    //   {
+    //     customer: customer3._id,
+    //     table: tables[5],
+    //     items: [products[4], products[8]],
+    //     qty: [1, 2],
+    //     method: "card",
+    //     payStatus: "paid",
+    //   },
+    // ];
 
-    const orders = await Promise.all(
-      orderSeeds.map(
-        ({ customer, table, items, qty, method, payStatus }, i) => {
-          const orderItems = items.map((p, j) => ({
-            productId: p._id,
-            name: p.name,
-            price: p.price,
-            quantity: qty[j],
-          }));
-          const totalAmount = orderItems.reduce(
-            (s, it) => s + it.price * it.quantity,
-            0,
-          );
-          return Order.create({
-            orderNumber: `ORD${Date.now()}${i}`,
-            tableNumber: table.tableNumber,
-            customer,
-            items: orderItems,
-            status: payStatus === "paid" ? "preparing" : "pending",
-            paymentMethod: method,
-            paymentStatus: payStatus,
-            totalAmount,
-          });
-        },
-      ),
-    );
-    console.log(`📦 ${orders.length} sample orders seeded.`);
+    // const orders = await Promise.all(
+    //   orderSeeds.map(
+    //     ({ customer, table, items, qty, method, payStatus }, i) => {
+    //       const orderItems = items.map((p, j) => ({
+    //         productId: p._id,
+    //         name: p.name,
+    //         price: p.price,
+    //         quantity: qty[j],
+    //       }));
+    //       const totalAmount = orderItems.reduce(
+    //         (s, it) => s + it.price * it.quantity,
+    //         0,
+    //       );
+    //       return Order.create({
+    //         orderNumber: `ORD${Date.now()}${i}`,
+    //         tableNumber: table.tableNumber,
+    //         customer,
+    //         items: orderItems,
+    //         status: payStatus === "paid" ? "preparing" : "pending",
+    //         paymentMethod: method,
+    //         paymentStatus: payStatus,
+    //         totalAmount,
+    //       });
+    //     },
+    //   ),
+    // );
+    // console.log(`📦 ${orders.length} sample orders seeded.`);
 
     console.log("\n✅ All data imported successfully!");
     console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
