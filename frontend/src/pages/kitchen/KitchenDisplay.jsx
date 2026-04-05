@@ -260,7 +260,11 @@ const KitchenDisplay = () => {
           {["pending", "preparing", "completed"].map((status) => {
             const cfg = statusConfig[status];
             const Icon = cfg.icon;
-            const statusOrders = orders.filter((o) => o.status === status);
+            let statusOrders = orders.filter((o) => o.status === status);
+            // Reverse pending and preparing columns so OLDEST orders are at the top (FIFO)
+            if (status !== "completed") {
+              statusOrders = [...statusOrders].reverse();
+            }
 
             return (
               <div key={status} className="space-y-3">
