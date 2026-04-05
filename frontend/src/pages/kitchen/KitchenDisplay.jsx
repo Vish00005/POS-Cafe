@@ -48,8 +48,8 @@ const KitchenDisplay = () => {
   const [updating, setUpdating] = useState(null);
   const [lastRefresh, setLastRefresh] = useState(new Date());
   const [newOrderId, setNewOrderId] = useState(null);
-  const [audioEnabled, setAudioEnabled] = useState(false);
-  const audioEnabledRef = useRef(false);
+  const [audioEnabled, setAudioEnabled] = useState(true);
+  const audioEnabledRef = useRef(true);
   const knownOrderIds = useRef(new Set());
   const [checkedItems, setCheckedItems] = useState(() => {
     const saved = localStorage.getItem("kitchen_checked_items");
