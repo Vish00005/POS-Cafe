@@ -78,7 +78,7 @@ const Register = () => {
             <UserPlus size={40} className="text-purple-400 group-hover:rotate-6" />
           </div>
           <h1 className="text-4xl font-black tracking-tighter mb-2">
-            JOIN <span className="gradient-text">ODOO</span>
+            JOIN <span className="gradient-text">DELIGHT CAFE</span>
           </h1>
           <p className="text-slate-400 font-medium tracking-widest text-xs uppercase opacity-80">Initialize your operative profile</p>
         </div>

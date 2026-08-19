@@ -63,7 +63,7 @@ const Login = () => {
             <Coffee size={40} className="text-indigo-400 group-hover:rotate-12" />
           </div>
           <h1 className="text-4xl font-black tracking-tighter mb-2">
-            <span className="gradient-text">ODOO</span> CAFETERIA
+            <span className="gradient-text">DELIGHT</span> CAFE
           </h1>
           <p className="text-slate-400 font-medium tracking-widest text-xs uppercase opacity-80">Premium Management System</p>
         </div>

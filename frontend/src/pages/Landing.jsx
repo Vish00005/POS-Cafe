@@ -37,10 +37,10 @@ const Landing = () => {
           </div>
           <div className="flex flex-col">
             <span className="text-lg font-black tracking-tighter leading-none">
-              ODOO
+              DELIGHT
             </span>
             <span className="text-[10px] text-indigo-400 font-black uppercase tracking-[0.3em]">
-              Cafeteria
+              Cafe
             </span>
           </div>
         </div>
@@ -198,7 +198,7 @@ const Landing = () => {
             </h2>
             <p className="text-indigo-100 text-lg lg:text-xl font-medium max-w-xl mx-auto mb-12">
               Join thousands of happy diners who've upgraded their cafeteria
-              experience with Odoo.
+              experience with Delight Cafe.
             </p>
             <button
               onClick={() => navigate("/register")}
@@ -219,10 +219,10 @@ const Landing = () => {
             </div>
             <div className="flex flex-col">
               <span className="text-xl font-black tracking-widest uppercase">
-                ODOO
+                DELIGHT
               </span>
               <span className="text-[11px] text-indigo-400 font-bold uppercase tracking-[0.4em]">
-                Cafeteria
+                Cafe
               </span>
             </div>
           </div>
