@@ -83,7 +83,7 @@ const Landing = () => {
         </h1>
 
         <p className="text-slate-400 text-lg lg:text-xl max-w-2xl mb-14 font-medium leading-relaxed animate-fade-up delay-500">
-          Odoo Cafeteria brings fine dining technology to your everyday meals.
+          Delight Cafe brings fine dining technology to your everyday meals.
           Skip the queue, scan your table, and indulge in pure convenience.
         </p>
 

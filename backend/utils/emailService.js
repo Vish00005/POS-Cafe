@@ -4,8 +4,8 @@ dotenv.config();
 
 export const sendOrderReceipt = async (order) => {
   const BREVO_API_KEY = process.env.BREVO_API_KEY;
-  const FROM_EMAIL = process.env.FROM_EMAIL || "no-reply@odoocafeteria.com";
-  const FROM_NAME = process.env.FROM_NAME || "Odoo Cafeteria";
+  const FROM_EMAIL = process.env.FROM_EMAIL || "no-reply@delightcafe.com";
+  const FROM_NAME = process.env.FROM_NAME || "Delight Cafe";
 
   if (!BREVO_API_KEY) {
     console.error(
@@ -59,7 +59,7 @@ export const sendOrderReceipt = async (order) => {
     <body>
       <div class="container">
         <div class="header">
-          <div style="font-size: 24px; font-weight: 800; letter-spacing: -0.025em; margin-bottom: 8px;">ODOO CAFETERIA</div>
+          <div style="font-size: 24px; font-weight: 800; letter-spacing: -0.025em; margin-bottom: 8px;">DELIGHT CAFE</div>
           <div style="font-size: 14px; opacity: 0.9;">Premium Dining Experience</div>
         </div>
         <div class="content" style="margin: 20px 0>
@@ -109,7 +109,7 @@ export const sendOrderReceipt = async (order) => {
           </div>
         </div>
         <div class="footer">
-          <p style="margin: 0;">&copy; ${new Date().getFullYear()} Odoo Cafeteria. All rights reserved.</p>
+          <p style="margin: 0;">&copy; ${new Date().getFullYear()} Delight Cafe. All rights reserved.</p>
           <p style="margin: 4px 0 0;">This is an automated receipt. Please do not reply to this email.</p>
         </div>
       </div>
@@ -123,7 +123,7 @@ export const sendOrderReceipt = async (order) => {
       {
         sender: { name: FROM_NAME, email: FROM_EMAIL },
         to: [{ email: recipientEmail }],
-        subject: `Your Odoo Cafeteria Receipt - Order #${order.orderNumber}`,
+        subject: `Your Delight Cafe Receipt - Order #${order.orderNumber}`,
         htmlContent: emailHtml,
       },
       {

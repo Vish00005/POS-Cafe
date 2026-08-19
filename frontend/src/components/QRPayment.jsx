@@ -9,7 +9,7 @@ import { Smartphone, CheckCircle2, ShieldCheck } from 'lucide-react';
  *   upiId    - UPI VPA for the merchant (default: cafe@upi)
  *   name     - merchant name
  */
-const QRPayment = ({ total, onPaid, upiId = 'cafe@upi', name = 'Odoo Cafeteria' }) => {
+const QRPayment = ({ total, onPaid, upiId = 'cafe@upi', name = 'Delight Cafe' }) => {
   // Standard UPI deep link
   const upiLink = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(name)}&am=${total.toFixed(2)}&cu=INR&tn=${encodeURIComponent('Cafeteria Order')}`;
 
@@ -24,7 +24,7 @@ const QRPayment = ({ total, onPaid, upiId = 'cafe@upi', name = 'Odoo Cafeteria' 
       {/* Amount */}
       <div className="text-center">
           <div className="flex flex-col items-center mb-4">
-            <span className="text-xl font-black text-white tracking-widest leading-none">ODOO CAFETERIA</span>
+            <span className="text-xl font-black text-white tracking-widest leading-none">DELIGHT CAFE</span>
             <span className="text-[10px] text-indigo-400 font-bold tracking-[0.2em] uppercase">Premium POS</span>
           </div>
         <div className="text-xs text-slate-400 uppercase tracking-wider mb-1">Amount to Pay</div>

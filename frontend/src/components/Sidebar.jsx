@@ -51,7 +51,7 @@ const Sidebar = () => {
             ☕
           </div>
           <div>
-            <div className="font-bold text-white text-sm tracking-widest uppercase">Odoo Cafeteria</div>
+            <div className="font-bold text-white text-sm tracking-widest uppercase">Delight Cafe</div>
             <div className="text-white/70 text-xs">{roleLabels[user?.role]}</div>
           </div>
         </div>
@@ -85,7 +85,7 @@ const Sidebar = () => {
             {user?.name?.[0]}
           </div>
           <div className="flex-1 min-w-0">
-            <span className="text-sm font-black text-white tracking-widest leading-none">ODOO CAFETERIA</span>
+            <span className="text-sm font-black text-white tracking-widest leading-none">DELIGHT CAFE</span>
             <span className="text-[9px] text-indigo-400 font-bold tracking-[0.2em] uppercase">Premium POS</span>
           </div>
         </div>

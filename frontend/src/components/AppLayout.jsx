@@ -74,7 +74,7 @@ const AppLayout = ({ children }) => {
           </div>
           <div className="flex flex-col">
             <span className="text-base font-black text-white tracking-widest leading-none">
-              ODOO CAFETERIA
+              DELIGHT CAFE
             </span>
             <span className="text-[10px] text-indigo-400 font-bold tracking-[0.2em] uppercase">
               Premium POS
@@ -134,7 +134,7 @@ const AppLayout = ({ children }) => {
             ☕
           </div>
           <span className="text-base font-black tracking-tighter text-white uppercase">
-            ODOO CAFETERIA
+            DELIGHT CAFE
           </span>
         </div>
         <button
